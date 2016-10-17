@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper.cs" />
     <Compile Include="Migrations\201610160851240_AlterPlayer.cs" />
     <Compile Include="Migrations\201610160851240_AlterPlayer.Designer.cs">
       <DependentUpon>201610160851240_AlterPlayer.cs</DependentUpon>

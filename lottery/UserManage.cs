@@ -38,13 +38,19 @@ namespace lottery
         private void btnAddDealer_Click(object sender, EventArgs e)
         {
             Thread t = new Thread(()=> {
-                string[] list = txtName.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+                string[] list = txtName.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var item in list)
                 {
+                    if (Helper.ExistUser(item.Trim(), 0))
+                    {
+                        MessageBox.Show($"已经存在和{item.Trim()}重名的庄家，不能重复添加");
+                        return;
+                    }
                     db.Dealer.Add(new Dealer() { Name = item.Trim(), IsDel = false });
                 }
                 db.SaveChanges();
                 txtName.Clear();
+                UserListInit();
             });
             t.Start();
         }
@@ -53,13 +59,19 @@ namespace lottery
         {
             Thread t = new Thread(() =>
               {
-                  string[] list = txtName.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+                  string[] list = txtName.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                   foreach (var item in list)
                   {
+                      if (Helper.ExistUser(item.Trim(),1))
+                      {
+                          MessageBox.Show($"已经存在和{item.Trim()}重名的闲家，不能重复添加");
+                          return;
+                      }
                       db.Player.Add(new Player() { Name = item.Trim(), IsDel = false });
                   }
                   db.SaveChanges();
                   txtName.Clear();
+                  UserListInit();
               });
             t.Start();
         }

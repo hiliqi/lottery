@@ -50,6 +50,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.lbGameCount = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.txtNewPlayerName = new System.Windows.Forms.TextBox();
+            this.btnAddNewPlayer = new System.Windows.Forms.Button();
             this.btnChangeDealer = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
             this.btnRemovePlayer = new System.Windows.Forms.Button();
@@ -81,7 +83,7 @@
             this.lotteryView.Location = new System.Drawing.Point(46, 164);
             this.lotteryView.Name = "lotteryView";
             this.lotteryView.RowTemplate.Height = 23;
-            this.lotteryView.Size = new System.Drawing.Size(981, 391);
+            this.lotteryView.Size = new System.Drawing.Size(877, 437);
             this.lotteryView.TabIndex = 1;
             this.lotteryView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.lotteryView_RowsAdded);
             // 
@@ -145,14 +147,14 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(28, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(707, 94);
+            this.groupBox1.Size = new System.Drawing.Size(923, 67);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "庄家";
             // 
             // txtDealerBalance
             // 
-            this.txtDealerBalance.Location = new System.Drawing.Point(540, 57);
+            this.txtDealerBalance.Location = new System.Drawing.Point(795, 29);
             this.txtDealerBalance.Name = "txtDealerBalance";
             this.txtDealerBalance.ReadOnly = true;
             this.txtDealerBalance.Size = new System.Drawing.Size(100, 21);
@@ -161,7 +163,7 @@
             // lb5
             // 
             this.lb5.AutoSize = true;
-            this.lb5.Location = new System.Drawing.Point(538, 32);
+            this.lb5.Location = new System.Drawing.Point(726, 32);
             this.lb5.Name = "lb5";
             this.lb5.Size = new System.Drawing.Size(53, 12);
             this.lb5.TabIndex = 9;
@@ -169,7 +171,7 @@
             // 
             // txtTotalProfit
             // 
-            this.txtTotalProfit.Location = new System.Drawing.Point(391, 57);
+            this.txtTotalProfit.Location = new System.Drawing.Point(578, 29);
             this.txtTotalProfit.Name = "txtTotalProfit";
             this.txtTotalProfit.ReadOnly = true;
             this.txtTotalProfit.Size = new System.Drawing.Size(121, 21);
@@ -178,7 +180,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(389, 33);
+            this.label4.Location = new System.Drawing.Point(519, 32);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(53, 12);
             this.label4.TabIndex = 7;
@@ -186,7 +188,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(331, 55);
+            this.button1.Location = new System.Drawing.Point(473, 27);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(31, 23);
             this.button1.TabIndex = 6;
@@ -195,7 +197,7 @@
             // 
             // txtDealerPoint
             // 
-            this.txtDealerPoint.Location = new System.Drawing.Point(274, 57);
+            this.txtDealerPoint.Location = new System.Drawing.Point(416, 29);
             this.txtDealerPoint.Name = "txtDealerPoint";
             this.txtDealerPoint.Size = new System.Drawing.Size(51, 21);
             this.txtDealerPoint.TabIndex = 5;
@@ -203,7 +205,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(272, 33);
+            this.label3.Location = new System.Drawing.Point(357, 32);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(53, 12);
             this.label3.TabIndex = 4;
@@ -211,7 +213,7 @@
             // 
             // txtBetMoney
             // 
-            this.txtBetMoney.Location = new System.Drawing.Point(139, 57);
+            this.txtBetMoney.Location = new System.Drawing.Point(232, 29);
             this.txtBetMoney.Name = "txtBetMoney";
             this.txtBetMoney.ReadOnly = true;
             this.txtBetMoney.Size = new System.Drawing.Size(108, 21);
@@ -220,7 +222,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(137, 33);
+            this.label2.Location = new System.Drawing.Point(173, 33);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(53, 12);
             this.label2.TabIndex = 2;
@@ -228,7 +230,7 @@
             // 
             // txtDealer
             // 
-            this.txtDealer.Location = new System.Drawing.Point(18, 57);
+            this.txtDealer.Location = new System.Drawing.Point(51, 30);
             this.txtDealer.Name = "txtDealer";
             this.txtDealer.ReadOnly = true;
             this.txtDealer.Size = new System.Drawing.Size(99, 21);
@@ -246,7 +248,7 @@
             // lbGameCount
             // 
             this.lbGameCount.AutoSize = true;
-            this.lbGameCount.Location = new System.Drawing.Point(780, 23);
+            this.lbGameCount.Location = new System.Drawing.Point(26, 610);
             this.lbGameCount.Name = "lbGameCount";
             this.lbGameCount.Size = new System.Drawing.Size(59, 12);
             this.lbGameCount.TabIndex = 3;
@@ -254,6 +256,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.txtNewPlayerName);
+            this.groupBox2.Controls.Add(this.btnAddNewPlayer);
             this.groupBox2.Controls.Add(this.btnChangeDealer);
             this.groupBox2.Controls.Add(this.btnNew);
             this.groupBox2.Controls.Add(this.btnRemovePlayer);
@@ -263,16 +267,33 @@
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.txtTotalBetMoney);
             this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Location = new System.Drawing.Point(28, 112);
+            this.groupBox2.Location = new System.Drawing.Point(28, 85);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(1016, 461);
+            this.groupBox2.Size = new System.Drawing.Size(923, 522);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "闲家";
             // 
+            // txtNewPlayerName
+            // 
+            this.txtNewPlayerName.Location = new System.Drawing.Point(505, 23);
+            this.txtNewPlayerName.Name = "txtNewPlayerName";
+            this.txtNewPlayerName.Size = new System.Drawing.Size(100, 21);
+            this.txtNewPlayerName.TabIndex = 10;
+            // 
+            // btnAddNewPlayer
+            // 
+            this.btnAddNewPlayer.Location = new System.Drawing.Point(611, 21);
+            this.btnAddNewPlayer.Name = "btnAddNewPlayer";
+            this.btnAddNewPlayer.Size = new System.Drawing.Size(75, 23);
+            this.btnAddNewPlayer.TabIndex = 9;
+            this.btnAddNewPlayer.Text = "加入闲家";
+            this.btnAddNewPlayer.UseVisualStyleBackColor = true;
+            this.btnAddNewPlayer.Click += new System.EventHandler(this.btnAddNewPlayer_Click);
+            // 
             // btnChangeDealer
             // 
-            this.btnChangeDealer.Location = new System.Drawing.Point(853, 21);
+            this.btnChangeDealer.Location = new System.Drawing.Point(773, 21);
             this.btnChangeDealer.Name = "btnChangeDealer";
             this.btnChangeDealer.Size = new System.Drawing.Size(75, 23);
             this.btnChangeDealer.TabIndex = 8;
@@ -282,7 +303,7 @@
             // 
             // btnNew
             // 
-            this.btnNew.Location = new System.Drawing.Point(772, 21);
+            this.btnNew.Location = new System.Drawing.Point(692, 21);
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(75, 23);
             this.btnNew.TabIndex = 7;
@@ -292,7 +313,7 @@
             // 
             // btnRemovePlayer
             // 
-            this.btnRemovePlayer.Location = new System.Drawing.Point(610, 21);
+            this.btnRemovePlayer.Location = new System.Drawing.Point(109, 50);
             this.btnRemovePlayer.Name = "btnRemovePlayer";
             this.btnRemovePlayer.Size = new System.Drawing.Size(75, 23);
             this.btnRemovePlayer.TabIndex = 6;
@@ -302,7 +323,7 @@
             // 
             // btnAddPlayer
             // 
-            this.btnAddPlayer.Location = new System.Drawing.Point(529, 21);
+            this.btnAddPlayer.Location = new System.Drawing.Point(28, 50);
             this.btnAddPlayer.Name = "btnAddPlayer";
             this.btnAddPlayer.Size = new System.Drawing.Size(75, 23);
             this.btnAddPlayer.TabIndex = 5;
@@ -312,7 +333,7 @@
             // 
             // btnCal
             // 
-            this.btnCal.Location = new System.Drawing.Point(691, 21);
+            this.btnCal.Location = new System.Drawing.Point(190, 50);
             this.btnCal.Name = "btnCal";
             this.btnCal.Size = new System.Drawing.Size(75, 23);
             this.btnCal.TabIndex = 4;
@@ -357,7 +378,7 @@
             // lbRoundCount
             // 
             this.lbRoundCount.AutoSize = true;
-            this.lbRoundCount.Location = new System.Drawing.Point(780, 45);
+            this.lbRoundCount.Location = new System.Drawing.Point(114, 610);
             this.lbRoundCount.Name = "lbRoundCount";
             this.lbRoundCount.Size = new System.Drawing.Size(59, 12);
             this.lbRoundCount.TabIndex = 5;
@@ -367,7 +388,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1070, 585);
+            this.ClientSize = new System.Drawing.Size(978, 637);
             this.Controls.Add(this.lbRoundCount);
             this.Controls.Add(this.lbGameCount);
             this.Controls.Add(this.groupBox1);
@@ -420,5 +441,7 @@
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnChangeDealer;
         private System.Windows.Forms.Label lbRoundCount;
+        private System.Windows.Forms.Button btnAddNewPlayer;
+        private System.Windows.Forms.TextBox txtNewPlayerName;
     }
 }

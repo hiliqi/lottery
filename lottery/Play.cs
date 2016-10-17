@@ -36,6 +36,8 @@ namespace lottery
             lbGameCount.Text = $"当前第{gameOrder}局";
         }
 
+
+
         private List<Player> GetPlayerList()
         {
             return db.Player.Where(p=>p.IsDel==false).ToList();
@@ -88,6 +90,7 @@ namespace lottery
                 else if (multiple<dealerPoint) //闲家点数小，则庄家赢，按庄家点数赔
                 {
                     profit = playerBetMoney * Math.Abs(dealerPoint);
+                    row.Cells["Multiple"].Value = dealerPoint; //倍数变为庄家点数
                     row.Cells["PlayerProfit"].Value = -profit;
                     row.Cells["DealerProfit"].Value = profit;
                     balance = -profit + lastBalance; //计算出本次闲家结余
@@ -154,6 +157,25 @@ namespace lottery
         {
             new Main().Show();
             Close();
+        }
+
+        private void btnAddNewPlayer_Click(object sender, EventArgs e)
+        {
+            var name = txtNewPlayerName.Text.Trim();
+            if (string.IsNullOrEmpty(name))
+            {
+                MessageBox.Show("请输入一个有效的名字");
+            }
+            if (Helper.ExistUser(name,1))
+            {
+                MessageBox.Show("已经存在同名的闲家，无法添加！");
+                return;
+            }
+            var player = new Player() { Name = name, IsDel = false };
+            db.Player.Add(player);
+            db.SaveChanges();
+            txtNewPlayerName.Clear();
+            MessageBox.Show("添加成功");
         }
     }
 }
