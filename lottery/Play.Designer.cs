@@ -48,8 +48,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.txtDealer = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.lbRoundsCount = new System.Windows.Forms.Label();
+            this.lbGameCount = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnChangeDealer = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
             this.btnRemovePlayer = new System.Windows.Forms.Button();
             this.btnAddPlayer = new System.Windows.Forms.Button();
@@ -58,7 +59,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.txtTotalBetMoney = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.btnChangeDealer = new System.Windows.Forms.Button();
+            this.lbRoundCount = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.lotteryView)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -242,14 +243,14 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "庄家";
             // 
-            // lbRoundsCount
+            // lbGameCount
             // 
-            this.lbRoundsCount.AutoSize = true;
-            this.lbRoundsCount.Location = new System.Drawing.Point(780, 23);
-            this.lbRoundsCount.Name = "lbRoundsCount";
-            this.lbRoundsCount.Size = new System.Drawing.Size(59, 12);
-            this.lbRoundsCount.TabIndex = 3;
-            this.lbRoundsCount.Text = "当前第 轮";
+            this.lbGameCount.AutoSize = true;
+            this.lbGameCount.Location = new System.Drawing.Point(780, 23);
+            this.lbGameCount.Name = "lbGameCount";
+            this.lbGameCount.Size = new System.Drawing.Size(59, 12);
+            this.lbGameCount.TabIndex = 3;
+            this.lbGameCount.Text = "当前第 局";
             // 
             // groupBox2
             // 
@@ -268,6 +269,16 @@
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "闲家";
+            // 
+            // btnChangeDealer
+            // 
+            this.btnChangeDealer.Location = new System.Drawing.Point(853, 21);
+            this.btnChangeDealer.Name = "btnChangeDealer";
+            this.btnChangeDealer.Size = new System.Drawing.Size(75, 23);
+            this.btnChangeDealer.TabIndex = 8;
+            this.btnChangeDealer.Text = "换庄";
+            this.btnChangeDealer.UseVisualStyleBackColor = true;
+            this.btnChangeDealer.Click += new System.EventHandler(this.btnChangeDealer_Click);
             // 
             // btnNew
             // 
@@ -343,22 +354,22 @@
             this.label5.TabIndex = 0;
             this.label5.Text = "总投注额";
             // 
-            // btnChangeDealer
+            // lbRoundCount
             // 
-            this.btnChangeDealer.Location = new System.Drawing.Point(853, 21);
-            this.btnChangeDealer.Name = "btnChangeDealer";
-            this.btnChangeDealer.Size = new System.Drawing.Size(75, 23);
-            this.btnChangeDealer.TabIndex = 8;
-            this.btnChangeDealer.Text = "换庄";
-            this.btnChangeDealer.UseVisualStyleBackColor = true;
-            this.btnChangeDealer.Click += new System.EventHandler(this.btnChangeDealer_Click);
+            this.lbRoundCount.AutoSize = true;
+            this.lbRoundCount.Location = new System.Drawing.Point(780, 45);
+            this.lbRoundCount.Name = "lbRoundCount";
+            this.lbRoundCount.Size = new System.Drawing.Size(59, 12);
+            this.lbRoundCount.TabIndex = 5;
+            this.lbRoundCount.Text = "当前第 轮";
             // 
             // Play
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1070, 585);
-            this.Controls.Add(this.lbRoundsCount);
+            this.Controls.Add(this.lbRoundCount);
+            this.Controls.Add(this.lbGameCount);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.lotteryView);
             this.Controls.Add(this.groupBox2);
@@ -390,7 +401,7 @@
         private System.Windows.Forms.TextBox txtTotalProfit;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label lbRoundsCount;
+        private System.Windows.Forms.Label lbGameCount;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btnCal;
         private System.Windows.Forms.TextBox textTotalProfit;
@@ -408,5 +419,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Surplus;
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnChangeDealer;
+        private System.Windows.Forms.Label lbRoundCount;
     }
 }

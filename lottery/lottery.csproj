@@ -86,6 +86,14 @@
     <Compile Include="Migrations\201610161331484_AlterPlayDetail.Designer.cs">
       <DependentUpon>201610161331484_AlterPlayDetail.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610170542473_AlterDealerPlayer.cs" />
+    <Compile Include="Migrations\201610170542473_AlterDealerPlayer.Designer.cs">
+      <DependentUpon>201610170542473_AlterDealerPlayer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610170707592_AlterRound.cs" />
+    <Compile Include="Migrations\201610170707592_AlterRound.Designer.cs">
+      <DependentUpon>201610170707592_AlterRound.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Dealer.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
@@ -128,6 +136,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610161331484_AlterPlayDetail.resx">
       <DependentUpon>201610161331484_AlterPlayDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610170542473_AlterDealerPlayer.resx">
+      <DependentUpon>201610170542473_AlterDealerPlayer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610170707592_AlterRound.resx">
+      <DependentUpon>201610170707592_AlterRound.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Play.resx">
       <DependentUpon>Play.cs</DependentUpon>

@@ -13,25 +13,32 @@ namespace lottery
 
     public partial class Play : Form
     {
-        private string dealerName = string.Empty;
-        private double betMoney = 0;
-        private int dealerPoint = 0;
+        private string dealerName = string.Empty; //庄家名称
+        private double betMoney = 0; //开庄金额
+        private int dealerPoint = 0; //庄家点数
         private int gameID = 0;
+        private int gameOrder = 0;
+        private double dealerBalance = 0;//庄家结余
         private LotteryDbContext db = new LotteryDbContext();
 
         public Play(string dealerName, int betMoney, int gameID)
         {
-            this.dealerName = dealerName; //获得庄家名
-            this.betMoney = betMoney; //获得开庄金额
+            this.dealerName = dealerName;
+            this.betMoney = betMoney;
             this.gameID = gameID;
             InitializeComponent();
+            dealerBalance = betMoney;
             txtBetMoney.Text = betMoney.ToString();
+            txtDealerBalance.Text = betMoney.ToString();
             txtDealer.Text = dealerName;
+            var game = db.Game.SingleOrDefault(g => g.GameID == gameID);
+            gameOrder = game.GameOrder;
+            lbGameCount.Text = $"当前第{gameOrder}局";
         }
 
         private List<Player> GetPlayerList()
         {
-            return db.Player.ToList();
+            return db.Player.Where(p=>p.IsDel==false).ToList();
         }
         private void btnCal_Click(object sender, EventArgs e)
         {
@@ -68,7 +75,7 @@ namespace lottery
                 if (lastRound != null) //如果存在上一把
                 {
                     lastDetail = db.PlayDetail.SingleOrDefault(p => p.RoundOrder == lastRound.RoundOrder && p.PlayerID==playerId);
-                    lastBalance = lastDetail.Balance; //则赋值上把结余
+                    lastBalance = lastDetail==null?0: lastDetail.Balance; //则赋值上把结余,如果该玩家没有上把，则为0
                 }
                 if (multiple>dealerPoint) //闲家点数大，则闲家赢，按闲家倍数赔
                 {
@@ -97,17 +104,19 @@ namespace lottery
                 detail = new PlayDetail();               
                 detail.PlayerID = playerId;
                 detail.RoundOrder = lastRound == null ? 1 : lastRound.RoundOrder + 1;
+                lbRoundCount.Text = $"当前第{detail.RoundOrder}轮";
                 detail.BetMoney = playerBetMoney;
                 detail.Balance = balance;
                 detail.Multiple = multiple;
                 db.PlayDetail.Add(detail);              
             }
             txtTotalProfit.Text = totalProfit.ToString();
-            txtDealerBalance.Text = (betMoney + totalProfit).ToString();
+            dealerBalance = dealerBalance + totalProfit;
+            txtDealerBalance.Text = dealerBalance.ToString();
             Round round = new Round()
             {
                 RoundOrder = lastRound == null ? 1 : lastRound.RoundOrder + 1,
-                TotalMoney = betMoney + totalProfit, //庄家结余
+                DealerBalance = dealerBalance, //庄家结余
                 GameID = gameID
             };
             db.Round.Add(round);

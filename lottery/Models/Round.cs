@@ -14,7 +14,7 @@ namespace lottery
         public int RoundOrder { get; set; }
 
         //本局合计
-        public double TotalMoney { get; set; }
+        public double DealerBalance { get; set; }
 
         public int GameID { get; set; }
         public Game Game { get; set; }

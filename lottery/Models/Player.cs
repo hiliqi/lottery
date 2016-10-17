@@ -14,6 +14,6 @@ namespace lottery
 
         //闲家
         public string Name { get; set; }
-
+        public bool IsDel { get; set; }
     }
 }

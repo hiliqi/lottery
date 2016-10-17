@@ -10,6 +10,6 @@ namespace lottery
     {
         public int DealerID { get; set; }
         public string Name { get; set; }
-
+        public bool IsDel { get; set; }
     }
 }

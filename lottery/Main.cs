@@ -18,7 +18,7 @@ namespace lottery
         public Main()
         {
             InitializeComponent();
-            cmbDealer.DataSource = db.Dealer.ToList();
+            cmbDealer.DataSource = db.Dealer.Where(d=>d.IsDel==false).ToList();
             cmbDealer.DisplayMember = "Name";
             cmbDealer.ValueMember = "DealerID";
         }
@@ -122,7 +122,7 @@ namespace lottery
         private void btnOK_Click(object sender, EventArgs e)
         {
             int money = 0;
-            int gameOrder = 0; //保存局数
+            int gameOrder = 1; //保存局数
             bool b = int.TryParse(txtMoney.Text, out money);
             if (!b)
             {
@@ -143,9 +143,9 @@ namespace lottery
             };
             db.Game.Add(model);
             db.SaveChanges();
-            Play play = new Play(cmbDealer.Text, money,game.GameID);
+            Play play = new Play(cmbDealer.Text, money,model.GameID); 
             play.Show();
-            Close();
+            Hide();
         }
 
         private void btnUserManager_Click(object sender, EventArgs e)

@@ -101,23 +101,23 @@
             this.groupBox2.Controls.Add(this.lbDealer);
             this.groupBox2.Location = new System.Drawing.Point(456, 35);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(589, 425);
+            this.groupBox2.Size = new System.Drawing.Size(506, 425);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "groupBox2";
+            this.groupBox2.Text = "用户删除";
             // 
             // lbDealer
             // 
             this.lbDealer.FormattingEnabled = true;
             this.lbDealer.ItemHeight = 12;
-            this.lbDealer.Location = new System.Drawing.Point(24, 46);
+            this.lbDealer.Location = new System.Drawing.Point(34, 46);
             this.lbDealer.Name = "lbDealer";
             this.lbDealer.Size = new System.Drawing.Size(120, 340);
             this.lbDealer.TabIndex = 0;
             // 
             // btnDelDealer
             // 
-            this.btnDelDealer.Location = new System.Drawing.Point(150, 46);
+            this.btnDelDealer.Location = new System.Drawing.Point(160, 46);
             this.btnDelDealer.Name = "btnDelDealer";
             this.btnDelDealer.Size = new System.Drawing.Size(75, 23);
             this.btnDelDealer.TabIndex = 1;
@@ -129,14 +129,14 @@
             // 
             this.lbPlayer.FormattingEnabled = true;
             this.lbPlayer.ItemHeight = 12;
-            this.lbPlayer.Location = new System.Drawing.Point(266, 46);
+            this.lbPlayer.Location = new System.Drawing.Point(276, 46);
             this.lbPlayer.Name = "lbPlayer";
             this.lbPlayer.Size = new System.Drawing.Size(120, 340);
             this.lbPlayer.TabIndex = 2;
             // 
             // btnDelPlayer
             // 
-            this.btnDelPlayer.Location = new System.Drawing.Point(392, 46);
+            this.btnDelPlayer.Location = new System.Drawing.Point(402, 46);
             this.btnDelPlayer.Name = "btnDelPlayer";
             this.btnDelPlayer.Size = new System.Drawing.Size(75, 23);
             this.btnDelPlayer.TabIndex = 3;
@@ -148,7 +148,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1077, 488);
+            this.ClientSize = new System.Drawing.Size(1017, 488);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "UserManage";
