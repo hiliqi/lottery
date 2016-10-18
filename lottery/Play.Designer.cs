@@ -39,7 +39,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.txtDealerBalance = new System.Windows.Forms.TextBox();
             this.lb5 = new System.Windows.Forms.Label();
-            this.txtTotalProfit = new System.Windows.Forms.TextBox();
+            this.txtDealerProfit = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.txtDealerPoint = new System.Windows.Forms.TextBox();
@@ -50,6 +50,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.lbGameCount = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.txtTotalMoney = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.txtNewPlayerName = new System.Windows.Forms.TextBox();
             this.btnAddNewPlayer = new System.Windows.Forms.Button();
             this.btnChangeDealer = new System.Windows.Forms.Button();
@@ -57,8 +59,6 @@
             this.btnRemovePlayer = new System.Windows.Forms.Button();
             this.btnAddPlayer = new System.Windows.Forms.Button();
             this.btnCal = new System.Windows.Forms.Button();
-            this.textTotalProfit = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.txtTotalBetMoney = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.lbRoundCount = new System.Windows.Forms.Label();
@@ -69,7 +69,6 @@
             // 
             // lotteryView
             // 
-            this.lotteryView.AllowUserToAddRows = false;
             this.lotteryView.AllowUserToOrderColumns = true;
             this.lotteryView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.lotteryView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -136,7 +135,7 @@
             // 
             this.groupBox1.Controls.Add(this.txtDealerBalance);
             this.groupBox1.Controls.Add(this.lb5);
-            this.groupBox1.Controls.Add(this.txtTotalProfit);
+            this.groupBox1.Controls.Add(this.txtDealerProfit);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.txtDealerPoint);
@@ -167,15 +166,15 @@
             this.lb5.Name = "lb5";
             this.lb5.Size = new System.Drawing.Size(53, 12);
             this.lb5.TabIndex = 9;
-            this.lb5.Text = "庄家总计";
+            this.lb5.Text = "庄家结余";
             // 
-            // txtTotalProfit
+            // txtDealerProfit
             // 
-            this.txtTotalProfit.Location = new System.Drawing.Point(578, 29);
-            this.txtTotalProfit.Name = "txtTotalProfit";
-            this.txtTotalProfit.ReadOnly = true;
-            this.txtTotalProfit.Size = new System.Drawing.Size(121, 21);
-            this.txtTotalProfit.TabIndex = 8;
+            this.txtDealerProfit.Location = new System.Drawing.Point(578, 29);
+            this.txtDealerProfit.Name = "txtDealerProfit";
+            this.txtDealerProfit.ReadOnly = true;
+            this.txtDealerProfit.Size = new System.Drawing.Size(121, 21);
+            this.txtDealerProfit.TabIndex = 8;
             // 
             // label4
             // 
@@ -184,7 +183,7 @@
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(53, 12);
             this.label4.TabIndex = 7;
-            this.label4.Text = "本轮合计";
+            this.label4.Text = "本轮盈亏";
             // 
             // button1
             // 
@@ -256,6 +255,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.txtTotalMoney);
+            this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.txtNewPlayerName);
             this.groupBox2.Controls.Add(this.btnAddNewPlayer);
             this.groupBox2.Controls.Add(this.btnChangeDealer);
@@ -263,8 +264,6 @@
             this.groupBox2.Controls.Add(this.btnRemovePlayer);
             this.groupBox2.Controls.Add(this.btnAddPlayer);
             this.groupBox2.Controls.Add(this.btnCal);
-            this.groupBox2.Controls.Add(this.textTotalProfit);
-            this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.txtTotalBetMoney);
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Location = new System.Drawing.Point(28, 85);
@@ -274,16 +273,33 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "闲家";
             // 
+            // txtTotalMoney
+            // 
+            this.txtTotalMoney.Location = new System.Drawing.Point(316, 23);
+            this.txtTotalMoney.Name = "txtTotalMoney";
+            this.txtTotalMoney.ReadOnly = true;
+            this.txtTotalMoney.Size = new System.Drawing.Size(140, 21);
+            this.txtTotalMoney.TabIndex = 12;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(257, 26);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(53, 12);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "总流水额";
+            // 
             // txtNewPlayerName
             // 
-            this.txtNewPlayerName.Location = new System.Drawing.Point(505, 23);
+            this.txtNewPlayerName.Location = new System.Drawing.Point(527, 23);
             this.txtNewPlayerName.Name = "txtNewPlayerName";
             this.txtNewPlayerName.Size = new System.Drawing.Size(100, 21);
             this.txtNewPlayerName.TabIndex = 10;
             // 
             // btnAddNewPlayer
             // 
-            this.btnAddNewPlayer.Location = new System.Drawing.Point(611, 21);
+            this.btnAddNewPlayer.Location = new System.Drawing.Point(633, 21);
             this.btnAddNewPlayer.Name = "btnAddNewPlayer";
             this.btnAddNewPlayer.Size = new System.Drawing.Size(75, 23);
             this.btnAddNewPlayer.TabIndex = 9;
@@ -293,7 +309,7 @@
             // 
             // btnChangeDealer
             // 
-            this.btnChangeDealer.Location = new System.Drawing.Point(773, 21);
+            this.btnChangeDealer.Location = new System.Drawing.Point(795, 21);
             this.btnChangeDealer.Name = "btnChangeDealer";
             this.btnChangeDealer.Size = new System.Drawing.Size(75, 23);
             this.btnChangeDealer.TabIndex = 8;
@@ -303,7 +319,7 @@
             // 
             // btnNew
             // 
-            this.btnNew.Location = new System.Drawing.Point(692, 21);
+            this.btnNew.Location = new System.Drawing.Point(714, 21);
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(75, 23);
             this.btnNew.TabIndex = 7;
@@ -341,29 +357,12 @@
             this.btnCal.UseVisualStyleBackColor = true;
             this.btnCal.Click += new System.EventHandler(this.btnCal_Click);
             // 
-            // textTotalProfit
-            // 
-            this.textTotalProfit.Location = new System.Drawing.Point(331, 23);
-            this.textTotalProfit.Name = "textTotalProfit";
-            this.textTotalProfit.ReadOnly = true;
-            this.textTotalProfit.Size = new System.Drawing.Size(156, 21);
-            this.textTotalProfit.TabIndex = 3;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(284, 26);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(41, 12);
-            this.label6.TabIndex = 2;
-            this.label6.Text = "总盈亏";
-            // 
             // txtTotalBetMoney
             // 
             this.txtTotalBetMoney.Location = new System.Drawing.Point(88, 23);
             this.txtTotalBetMoney.Name = "txtTotalBetMoney";
             this.txtTotalBetMoney.ReadOnly = true;
-            this.txtTotalBetMoney.Size = new System.Drawing.Size(159, 21);
+            this.txtTotalBetMoney.Size = new System.Drawing.Size(138, 21);
             this.txtTotalBetMoney.TabIndex = 1;
             // 
             // label5
@@ -419,14 +418,12 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtDealerBalance;
         private System.Windows.Forms.Label lb5;
-        private System.Windows.Forms.TextBox txtTotalProfit;
+        private System.Windows.Forms.TextBox txtDealerProfit;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label lbGameCount;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btnCal;
-        private System.Windows.Forms.TextBox textTotalProfit;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtTotalBetMoney;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnAddPlayer;
@@ -443,5 +440,7 @@
         private System.Windows.Forms.Label lbRoundCount;
         private System.Windows.Forms.Button btnAddNewPlayer;
         private System.Windows.Forms.TextBox txtNewPlayerName;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox txtTotalMoney;
     }
 }

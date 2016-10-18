@@ -7,14 +7,14 @@ namespace lottery.Migrations
     {
         public override void Up()
         {
-            AddColumn("dbo.Rounds", "DealerBalance", c => c.Double(nullable: false));
-            DropColumn("dbo.Rounds", "TotalMoney");
+            AddColumn("dbo.Rounds", "TotalProfit", c => c.Double(nullable: false));
+            AddColumn("dbo.Rounds", "TotalBetMoney", c => c.Double(nullable: false));
         }
         
         public override void Down()
         {
-            AddColumn("dbo.Rounds", "TotalMoney", c => c.Double(nullable: false));
-            DropColumn("dbo.Rounds", "DealerBalance");
+            DropColumn("dbo.Rounds", "TotalBetMoney");
+            DropColumn("dbo.Rounds", "TotalProfit");
         }
     }
 }

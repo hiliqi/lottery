@@ -14,6 +14,7 @@
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnUserManager;
+        private System.Windows.Forms.Label lbMsg;
     }
 }
 

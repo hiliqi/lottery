@@ -79,22 +79,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper.cs" />
-    <Compile Include="Migrations\201610160851240_AlterPlayer.cs" />
-    <Compile Include="Migrations\201610160851240_AlterPlayer.Designer.cs">
-      <DependentUpon>201610160851240_AlterPlayer.cs</DependentUpon>
+    <Compile Include="Migrations\201610180240148_InitialCreate.cs" />
+    <Compile Include="Migrations\201610180240148_InitialCreate.Designer.cs">
+      <DependentUpon>201610180240148_InitialCreate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201610161331484_AlterPlayDetail.cs" />
-    <Compile Include="Migrations\201610161331484_AlterPlayDetail.Designer.cs">
-      <DependentUpon>201610161331484_AlterPlayDetail.cs</DependentUpon>
+    <Compile Include="Migrations\201610180629187_AlterRound.cs" />
+    <Compile Include="Migrations\201610180629187_AlterRound.Designer.cs">
+      <DependentUpon>201610180629187_AlterRound.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201610170542473_AlterDealerPlayer.cs" />
-    <Compile Include="Migrations\201610170542473_AlterDealerPlayer.Designer.cs">
-      <DependentUpon>201610170542473_AlterDealerPlayer.cs</DependentUpon>
+    <Compile Include="Migrations\201610180659381_AlterRound1.cs" />
+    <Compile Include="Migrations\201610180659381_AlterRound1.Designer.cs">
+      <DependentUpon>201610180659381_AlterRound1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201610170707592_AlterRound.cs" />
-    <Compile Include="Migrations\201610170707592_AlterRound.Designer.cs">
-      <DependentUpon>201610170707592_AlterRound.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Dealer.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
@@ -104,11 +101,6 @@
     </Compile>
     <Compile Include="Models\Game.cs" />
     <Compile Include="DB\LotteryDbContext.cs" />
-    <Compile Include="Migrations\201610160812053_InitialCreate.cs" />
-    <Compile Include="Migrations\201610160812053_InitialCreate.Designer.cs">
-      <DependentUpon>201610160812053_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Play.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,20 +121,14 @@
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610160812053_InitialCreate.resx">
-      <DependentUpon>201610160812053_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201610180240148_InitialCreate.resx">
+      <DependentUpon>201610180240148_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610160851240_AlterPlayer.resx">
-      <DependentUpon>201610160851240_AlterPlayer.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201610180629187_AlterRound.resx">
+      <DependentUpon>201610180629187_AlterRound.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610161331484_AlterPlayDetail.resx">
-      <DependentUpon>201610161331484_AlterPlayDetail.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610170542473_AlterDealerPlayer.resx">
-      <DependentUpon>201610170542473_AlterDealerPlayer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610170707592_AlterRound.resx">
-      <DependentUpon>201610170707592_AlterRound.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201610180659381_AlterRound1.resx">
+      <DependentUpon>201610180659381_AlterRound1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Play.resx">
       <DependentUpon>Play.cs</DependentUpon>
@@ -173,6 +159,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -20,6 +20,6 @@ namespace lottery
 
         public int DealerID { get; set; }
 
-        public Dealer Dealer { get; set; }
+        public virtual Dealer Dealer { get; set; }
     }
 }

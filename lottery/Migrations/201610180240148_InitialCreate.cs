@@ -13,6 +13,7 @@ namespace lottery.Migrations
                     {
                         DealerID = c.Int(nullable: false, identity: true),
                         Name = c.String(unicode: false),
+                        IsDel = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.DealerID);
             
@@ -36,12 +37,16 @@ namespace lottery.Migrations
                     {
                         PlayDetailID = c.Int(nullable: false, identity: true),
                         PlayerID = c.Int(nullable: false),
-                        RoundID = c.Int(nullable: false),
                         BetMoney = c.Double(nullable: false),
                         Balance = c.Double(nullable: false),
                         Multiple = c.Int(nullable: false),
+                        RoundID = c.Int(nullable: false),
                     })
-                .PrimaryKey(t => t.PlayDetailID);
+                .PrimaryKey(t => t.PlayDetailID)
+                .ForeignKey("dbo.Players", t => t.PlayerID, cascadeDelete: true)
+                .ForeignKey("dbo.Rounds", t => t.RoundID, cascadeDelete: true)
+                .Index(t => t.PlayerID)
+                .Index(t => t.RoundID);
             
             CreateTable(
                 "dbo.Players",
@@ -49,8 +54,7 @@ namespace lottery.Migrations
                     {
                         PlayerID = c.Int(nullable: false, identity: true),
                         Name = c.String(unicode: false),
-                        Money = c.Double(nullable: false),
-                        Multiple = c.Int(nullable: false),
+                        IsDel = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.PlayerID);
             
@@ -60,7 +64,7 @@ namespace lottery.Migrations
                     {
                         RoundID = c.Int(nullable: false, identity: true),
                         RoundOrder = c.Int(nullable: false),
-                        TotalMoney = c.Double(nullable: false),
+                        DealerBalance = c.Double(nullable: false),
                         GameID = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.RoundID)
@@ -71,9 +75,13 @@ namespace lottery.Migrations
         
         public override void Down()
         {
+            DropForeignKey("dbo.PlayDetails", "RoundID", "dbo.Rounds");
             DropForeignKey("dbo.Rounds", "GameID", "dbo.Games");
+            DropForeignKey("dbo.PlayDetails", "PlayerID", "dbo.Players");
             DropForeignKey("dbo.Games", "DealerID", "dbo.Dealers");
+            DropIndex("dbo.PlayDetails", new[] { "RoundID" });
             DropIndex("dbo.Rounds", new[] { "GameID" });
+            DropIndex("dbo.PlayDetails", new[] { "PlayerID" });
             DropIndex("dbo.Games", new[] { "DealerID" });
             DropTable("dbo.Rounds");
             DropTable("dbo.Players");

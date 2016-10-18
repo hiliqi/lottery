@@ -7,13 +7,13 @@ namespace lottery.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.0.0-20911")]
-    public sealed partial class AlterDealerPlayer : IMigrationMetadata
+    public sealed partial class AlterRound1 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AlterDealerPlayer));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AlterRound1));
         
         string IMigrationMetadata.Id
         {
-            get { return "201610170542473_AlterDealerPlayer"; }
+            get { return "201610180659381_AlterRound1"; }
         }
         
         string IMigrationMetadata.Source

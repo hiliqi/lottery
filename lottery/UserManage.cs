@@ -15,24 +15,28 @@ namespace lottery
     public partial class UserManage : Form
     {
         LotteryDbContext db = new LotteryDbContext();
-        Main main;
-        public UserManage(Main main)
+        public UserManage()
         {
             InitializeComponent();
             TextBox.CheckForIllegalCrossThreadCalls = false;
             ListBox.CheckForIllegalCrossThreadCalls = false;
-            this.main = main;
-            UserListInit();
+            Thread t = new Thread(() =>
+              {
+                  UserListInit();
+              });
+            t.Start();
         }
 
         private void UserListInit()
         {
+            lbMsg.Text = "正在加载庄闲家名单";
             lbDealer.DataSource = db.Dealer.Where(d => d.IsDel == false).ToList();
             lbDealer.DisplayMember = "Name";
             lbDealer.ValueMember = "DealerID";
             lbPlayer.DataSource = db.Player.Where(d => d.IsDel == false).ToList();
             lbPlayer.DisplayMember = "Name";
             lbPlayer.ValueMember = "PlayerID";
+            lbMsg.Text = string.Empty;
         }
 
         private void btnAddDealer_Click(object sender, EventArgs e)
@@ -118,7 +122,6 @@ namespace lottery
 
         private void btnPlay_Click(object sender, EventArgs e)
         {
-            main.Show();
             Close();
         }
     }
