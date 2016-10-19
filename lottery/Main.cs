@@ -29,8 +29,11 @@ namespace lottery
             this.txtMoney = new System.Windows.Forms.TextBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.btnUserManager = new System.Windows.Forms.Button();
             this.lbMsg = new System.Windows.Forms.Label();
+            this.btnUserManager = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtFeePercent = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -71,7 +74,7 @@ namespace lottery
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(258, 185);
+            this.btnOK.Location = new System.Drawing.Point(229, 200);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 4;
@@ -81,24 +84,18 @@ namespace lottery
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.txtFeePercent);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.btnOK);
             this.groupBox1.Controls.Add(this.lbMsg);
             this.groupBox1.Controls.Add(this.btnUserManager);
             this.groupBox1.Location = new System.Drawing.Point(29, 16);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(379, 231);
+            this.groupBox1.Size = new System.Drawing.Size(379, 317);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "开庄";
-            // 
-            // btnUserManager
-            // 
-            this.btnUserManager.Location = new System.Drawing.Point(37, 169);
-            this.btnUserManager.Name = "btnUserManager";
-            this.btnUserManager.Size = new System.Drawing.Size(75, 23);
-            this.btnUserManager.TabIndex = 0;
-            this.btnUserManager.Text = "管理玩家";
-            this.btnUserManager.UseVisualStyleBackColor = true;
-            this.btnUserManager.Click += new System.EventHandler(this.btnUserManager_Click);
             // 
             // lbMsg
             // 
@@ -108,12 +105,47 @@ namespace lottery
             this.lbMsg.Size = new System.Drawing.Size(0, 12);
             this.lbMsg.TabIndex = 1;
             // 
+            // btnUserManager
+            // 
+            this.btnUserManager.Location = new System.Drawing.Point(37, 200);
+            this.btnUserManager.Name = "btnUserManager";
+            this.btnUserManager.Size = new System.Drawing.Size(75, 23);
+            this.btnUserManager.TabIndex = 0;
+            this.btnUserManager.Text = "管理玩家";
+            this.btnUserManager.UseVisualStyleBackColor = true;
+            this.btnUserManager.Click += new System.EventHandler(this.btnUserManager_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(35, 164);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(53, 12);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "平台抽成";
+            // 
+            // txtFeePercent
+            // 
+            this.txtFeePercent.Location = new System.Drawing.Point(107, 161);
+            this.txtFeePercent.Name = "txtFeePercent";
+            this.txtFeePercent.Size = new System.Drawing.Size(41, 21);
+            this.txtFeePercent.TabIndex = 6;
+            this.txtFeePercent.Text = "5";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(154, 164);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(11, 12);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "%";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(441, 276);
-            this.Controls.Add(this.btnOK);
+            this.ClientSize = new System.Drawing.Size(441, 345);
             this.Controls.Add(this.txtMoney);
             this.Controls.Add(this.lbMoney);
             this.Controls.Add(this.cmbDealer);
@@ -121,7 +153,7 @@ namespace lottery
             this.Controls.Add(this.groupBox1);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "博彩计算器";
+            this.Text = "牛牛计算器";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -133,13 +165,25 @@ namespace lottery
         {
             int money = 0;
             int gameOrder = 1; //保存局数
+            int percent = 5; //抽成比例
             bool b = int.TryParse(txtMoney.Text, out money);
             if (!b)
             {
                 MessageBox.Show("请输入正确的金额");
                 return;
             }
-            if (cmbDealer.SelectedValue==null)
+            b = int.TryParse(txtFeePercent.Text, out percent);
+            if (!b)
+            {
+                MessageBox.Show("抽成比例需输入0-100的整数");
+                return;
+            }
+            if (percent < 0 || percent > 100)
+            {
+                MessageBox.Show("抽成比例需输入0-100的整数");
+                return;
+            }
+            if (cmbDealer.SelectedValue == null)
             {
                 MessageBox.Show("请选择庄家");
                 return;
@@ -152,7 +196,7 @@ namespace lottery
                 return;
             }
             var game = db.Game.OrderByDescending(g => g.GameID).FirstOrDefault();
-            if (game!=null)
+            if (game != null)
             {
                 gameOrder = game.GameOrder + 1; //查出最近一局的局数
             }
@@ -161,18 +205,19 @@ namespace lottery
                 GameOrder = gameOrder,
                 BetMoney = money,
                 Profit = 0,
-                DealerID = cmbDealerID
+                DealerID = cmbDealerID,
+                FeePercent = (double)percent / 100
             };
             db.Game.Add(model);
             db.SaveChanges();
-             Play play = new Play(cmbDealer.Text, money, model.GameID);
-            play.Show();
+            Play play = new Play(cmbDealer.Text, money, model.GameID);
+            play.ShowDialog();
             txtMoney.Clear();
         }
 
         private void btnUserManager_Click(object sender, EventArgs e)
         {
-            new UserManage().Show();
+            new UserManage().ShowDialog();
         }
 
         private void cmbDealer_Click(object sender, EventArgs e)

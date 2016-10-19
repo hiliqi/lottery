@@ -29,7 +29,8 @@
         private void InitializeComponent()
         {
             this.lotteryView = new System.Windows.Forms.DataGridView();
-            this.Player = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.PlayerID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Player = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Money = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Multiple = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PlayerProfit = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -52,8 +53,6 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.txtTotalMoney = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.txtNewPlayerName = new System.Windows.Forms.TextBox();
-            this.btnAddNewPlayer = new System.Windows.Forms.Button();
             this.btnChangeDealer = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
             this.btnRemovePlayer = new System.Windows.Forms.Button();
@@ -69,9 +68,11 @@
             // 
             // lotteryView
             // 
+            this.lotteryView.AllowUserToAddRows = false;
             this.lotteryView.AllowUserToOrderColumns = true;
             this.lotteryView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.lotteryView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.PlayerID,
             this.Player,
             this.Money,
             this.Multiple,
@@ -79,21 +80,23 @@
             this.DealerProfit,
             this.LastSurplus,
             this.Surplus});
-            this.lotteryView.Location = new System.Drawing.Point(46, 164);
+            this.lotteryView.Location = new System.Drawing.Point(18, 50);
             this.lotteryView.Name = "lotteryView";
             this.lotteryView.RowTemplate.Height = 23;
-            this.lotteryView.Size = new System.Drawing.Size(877, 437);
+            this.lotteryView.Size = new System.Drawing.Size(858, 466);
             this.lotteryView.TabIndex = 1;
-            this.lotteryView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.lotteryView_RowsAdded);
+            // 
+            // PlayerID
+            // 
+            this.PlayerID.HeaderText = "闲家ID";
+            this.PlayerID.Name = "PlayerID";
+            this.PlayerID.ReadOnly = true;
             // 
             // Player
             // 
-            this.Player.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
             this.Player.HeaderText = "闲家";
             this.Player.Name = "Player";
             this.Player.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Player.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.Player.ToolTipText = "下拉选择闲家";
             // 
             // Money
             // 
@@ -255,15 +258,14 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.btnCal);
             this.groupBox2.Controls.Add(this.txtTotalMoney);
             this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Controls.Add(this.txtNewPlayerName);
-            this.groupBox2.Controls.Add(this.btnAddNewPlayer);
+            this.groupBox2.Controls.Add(this.lotteryView);
             this.groupBox2.Controls.Add(this.btnChangeDealer);
             this.groupBox2.Controls.Add(this.btnNew);
             this.groupBox2.Controls.Add(this.btnRemovePlayer);
             this.groupBox2.Controls.Add(this.btnAddPlayer);
-            this.groupBox2.Controls.Add(this.btnCal);
             this.groupBox2.Controls.Add(this.txtTotalBetMoney);
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Location = new System.Drawing.Point(28, 85);
@@ -290,23 +292,6 @@
             this.label6.TabIndex = 11;
             this.label6.Text = "总流水额";
             // 
-            // txtNewPlayerName
-            // 
-            this.txtNewPlayerName.Location = new System.Drawing.Point(527, 23);
-            this.txtNewPlayerName.Name = "txtNewPlayerName";
-            this.txtNewPlayerName.Size = new System.Drawing.Size(100, 21);
-            this.txtNewPlayerName.TabIndex = 10;
-            // 
-            // btnAddNewPlayer
-            // 
-            this.btnAddNewPlayer.Location = new System.Drawing.Point(633, 21);
-            this.btnAddNewPlayer.Name = "btnAddNewPlayer";
-            this.btnAddNewPlayer.Size = new System.Drawing.Size(75, 23);
-            this.btnAddNewPlayer.TabIndex = 9;
-            this.btnAddNewPlayer.Text = "加入闲家";
-            this.btnAddNewPlayer.UseVisualStyleBackColor = true;
-            this.btnAddNewPlayer.Click += new System.EventHandler(this.btnAddNewPlayer_Click);
-            // 
             // btnChangeDealer
             // 
             this.btnChangeDealer.Location = new System.Drawing.Point(795, 21);
@@ -329,7 +314,7 @@
             // 
             // btnRemovePlayer
             // 
-            this.btnRemovePlayer.Location = new System.Drawing.Point(109, 50);
+            this.btnRemovePlayer.Location = new System.Drawing.Point(552, 21);
             this.btnRemovePlayer.Name = "btnRemovePlayer";
             this.btnRemovePlayer.Size = new System.Drawing.Size(75, 23);
             this.btnRemovePlayer.TabIndex = 6;
@@ -339,7 +324,7 @@
             // 
             // btnAddPlayer
             // 
-            this.btnAddPlayer.Location = new System.Drawing.Point(28, 50);
+            this.btnAddPlayer.Location = new System.Drawing.Point(633, 21);
             this.btnAddPlayer.Name = "btnAddPlayer";
             this.btnAddPlayer.Size = new System.Drawing.Size(75, 23);
             this.btnAddPlayer.TabIndex = 5;
@@ -349,7 +334,7 @@
             // 
             // btnCal
             // 
-            this.btnCal.Location = new System.Drawing.Point(190, 50);
+            this.btnCal.Location = new System.Drawing.Point(471, 21);
             this.btnCal.Name = "btnCal";
             this.btnCal.Size = new System.Drawing.Size(75, 23);
             this.btnCal.TabIndex = 4;
@@ -391,7 +376,6 @@
             this.Controls.Add(this.lbRoundCount);
             this.Controls.Add(this.lbGameCount);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.lotteryView);
             this.Controls.Add(this.groupBox2);
             this.Name = "Play";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -428,19 +412,18 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnAddPlayer;
         private System.Windows.Forms.Button btnRemovePlayer;
-        private System.Windows.Forms.DataGridViewComboBoxColumn Player;
+        private System.Windows.Forms.Button btnNew;
+        private System.Windows.Forms.Button btnChangeDealer;
+        private System.Windows.Forms.Label lbRoundCount;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox txtTotalMoney;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PlayerID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Player;
         private System.Windows.Forms.DataGridViewTextBoxColumn Money;
         private System.Windows.Forms.DataGridViewTextBoxColumn Multiple;
         private System.Windows.Forms.DataGridViewTextBoxColumn PlayerProfit;
         private System.Windows.Forms.DataGridViewTextBoxColumn DealerProfit;
         private System.Windows.Forms.DataGridViewTextBoxColumn LastSurplus;
         private System.Windows.Forms.DataGridViewTextBoxColumn Surplus;
-        private System.Windows.Forms.Button btnNew;
-        private System.Windows.Forms.Button btnChangeDealer;
-        private System.Windows.Forms.Label lbRoundCount;
-        private System.Windows.Forms.Button btnAddNewPlayer;
-        private System.Windows.Forms.TextBox txtNewPlayerName;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox txtTotalMoney;
     }
 }

@@ -15,6 +15,7 @@ namespace lottery
         public double BetMoney { get; set; }//投注金额       
         public double Balance { get; set; }//结余金额        
         public int Multiple { get; set; }//盈亏倍数
+        public int FinalMultiple { get; set; } //最终盈亏倍数
         public int RoundID { get; set; }
         public virtual Round Round { get; set; }
     }
