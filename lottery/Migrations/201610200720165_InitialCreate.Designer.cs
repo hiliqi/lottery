@@ -13,7 +13,7 @@ namespace lottery.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201610180240148_InitialCreate"; }
+            get { return "201610200720165_InitialCreate"; }
         }
         
         string IMigrationMetadata.Source

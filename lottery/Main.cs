@@ -210,7 +210,7 @@ namespace lottery
             };
             db.Game.Add(model);
             db.SaveChanges();
-            Play play = new Play(cmbDealer.Text, money, model.GameID);
+            Play play = new Play(cmbDealer.Text, money, model.GameID, (double)percent / 100);
             play.ShowDialog();
             txtMoney.Clear();
         }

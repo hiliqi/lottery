@@ -20,6 +20,7 @@ namespace lottery
         private int dealerPoint = 0; //庄家点数
         private int gameID = 0;
         private int gameOrder = 0;
+        private double feePercent = 0; //本局抽成比例
         private double dealerBalance = 0;//庄家结余
         private int currentRoundId = -1; //当前轮ID
         private int currentRoundOrder = 0; //当前轮数
@@ -29,19 +30,19 @@ namespace lottery
         private bool isNewRound = false;
         private List<string> tempPlayerName = new List<string>(); //保存从数据库里查出来的闲家名字，用来检查新添加的闲家重名
 
-        public Play(string dealerName, int betMoney, int gameID)
+        public Play(string dealerName, int betMoney, int gameID, double feePercent)
         {
             this.dealerName = dealerName;
             this.betMoney = betMoney;
             this.gameID = gameID;
-            InitializeComponent();
-            dealerBalance = betMoney;
-            txtBetMoney.Text = betMoney.ToString();
-            txtDealerBalance.Text = betMoney.ToString();
+            this.feePercent = feePercent;
+            InitializeComponent();            
             txtDealer.Text = dealerName;
             var game = db.Game.SingleOrDefault(g => g.GameID == gameID);
             gameOrder = game.GameOrder;
             lbGameCount.Text = $"当前第{gameOrder}局";
+            dealerBalance = betMoney; //一开始庄家的结余等于投注金额
+            txtDealerBalance.Text = betMoney.ToString();
             InitRound(); //开局的时候就初始化一轮
             LoadAllPlayer();
         }
@@ -77,10 +78,13 @@ namespace lottery
             Round round = new Round() { GameID = gameID, RoundOrder = currentRoundOrder };
             var model = db.Round.Add(round);
             db.SaveChanges();
+            betMoney = dealerBalance; //新一轮开始时，本轮庄家投注等于上一轮的庄家结余
+            txtBetMoney.Text = betMoney.ToString();
             currentRoundId = model.RoundID;
             isNewRound = true; //表示新的一轮
         }
 
+        //开始计算
         private void btnCal_Click(object sender, EventArgs e)
         {
             if (!isNewRound)
@@ -94,9 +98,9 @@ namespace lottery
                 MessageBox.Show("输入正确的庄家点数");
                 return;
             }
-            if (dealerPoint < 1 || dealerPoint > 10)
+            if (dealerPoint < 1)
             {
-                MessageBox.Show("点数必须介于1和10之间的整数");
+                MessageBox.Show("点数必须大于1");
                 return;
             }
             PlayDetail detail = null;
@@ -106,6 +110,8 @@ namespace lottery
             double totalMoney = 0; //总流水额
             int finalMultiple = 0; //最终盈亏倍数
             int playerBetMoney = 0; //闲家投注
+            double fee = betMoney * feePercent; //计算出本轮抽成
+            lbFee.Text = $"本轮抽成：{fee}";
             foreach (DataGridViewRow row in lotteryView.Rows)
             {
                 if (row.Cells["Money"].Value == null)
@@ -129,9 +135,9 @@ namespace lottery
                     MessageBox.Show("请输入正确的投注金额和倍数");
                     return;
                 }
-                if (multiple < 1 || multiple > 10)
+                if (multiple < 1)
                 {
-                    MessageBox.Show("点数必须介于1和10之间的整数");
+                    MessageBox.Show("点数必须大于1");
                     return;
                 }
                 totalBetMoney += playerBetMoney;//累加投注额
@@ -212,14 +218,14 @@ namespace lottery
             }
             txtDealerProfit.Text = dealerProfit.ToString();
             txtTotalMoney.Text = totalMoney.ToString();
-            dealerBalance = dealerBalance + dealerProfit; //计算出庄家结余
+            dealerBalance = dealerBalance + dealerProfit - fee; //计算出庄家结余，要减去本轮抽成
             txtDealerBalance.Text = dealerBalance.ToString();
-            UpdateRoundStatus(currentRoundId, dealerBalance, totalMoney, totalBetMoney, dealerProfit); //更新本轮状态
+            UpdateRoundStatus(currentRoundId, dealerBalance, totalMoney, totalBetMoney, dealerProfit, fee); //更新本轮状态
             isNewRound = false; //表示该轮已经结束       
         }
 
         //计算时更新当前轮状态
-        private void UpdateRoundStatus(int id, double dealerBalance, double totalMoney, double totalBetMoney, double dealerProfit)
+        private void UpdateRoundStatus(int id, double dealerBalance, double totalMoney, double totalBetMoney, double dealerProfit, double fee)
         {
             var round = db.Round.SingleOrDefault(r => r.RoundID == id);
             if (round == null)
@@ -229,7 +235,8 @@ namespace lottery
             round.DealerBalance = dealerBalance; //庄家结余
             round.TotalBetMoney = totalBetMoney; //总投注额
             round.TotalMoney = totalMoney; //总流水额
-            round.DealerProfit = dealerPoint;//庄家盈亏
+            round.DealerProfit = dealerProfit;//庄家盈亏
+            round.Fee = fee; //本轮抽成
             db.Entry(round).State = EntityState.Modified;
             db.SaveChanges();
         }
@@ -259,6 +266,12 @@ namespace lottery
         //初始化新的一轮
         private void btnNew_Click(object sender, EventArgs e)
         {
+            if (isNewRound)
+            {
+                MessageBox.Show("当前已是新的一轮");
+                return;
+            }
+            txtBetMoney.Text = dealerBalance.ToString();
             txtDealerPoint.Text = string.Empty;
             isNewRound = true;
             lotteryView.Rows.Clear();

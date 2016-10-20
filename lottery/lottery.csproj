@@ -79,29 +79,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper.cs" />
-    <Compile Include="Migrations\201610180240148_InitialCreate.cs" />
-    <Compile Include="Migrations\201610180240148_InitialCreate.Designer.cs">
-      <DependentUpon>201610180240148_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610180629187_AlterRound.cs" />
-    <Compile Include="Migrations\201610180629187_AlterRound.Designer.cs">
-      <DependentUpon>201610180629187_AlterRound.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610180659381_AlterRound1.cs" />
-    <Compile Include="Migrations\201610180659381_AlterRound1.Designer.cs">
-      <DependentUpon>201610180659381_AlterRound1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610191402353_AlterPlayDetail.cs" />
-    <Compile Include="Migrations\201610191402353_AlterPlayDetail.Designer.cs">
-      <DependentUpon>201610191402353_AlterPlayDetail.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610191425180_AlterGame.cs" />
-    <Compile Include="Migrations\201610191425180_AlterGame.Designer.cs">
-      <DependentUpon>201610191425180_AlterGame.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610191440420_Alter.cs" />
-    <Compile Include="Migrations\201610191440420_Alter.Designer.cs">
-      <DependentUpon>201610191440420_Alter.cs</DependentUpon>
+    <Compile Include="Migrations\201610200720165_InitialCreate.cs" />
+    <Compile Include="Migrations\201610200720165_InitialCreate.Designer.cs">
+      <DependentUpon>201610200720165_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Dealer.cs" />
@@ -139,23 +119,8 @@
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610180240148_InitialCreate.resx">
-      <DependentUpon>201610180240148_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610180629187_AlterRound.resx">
-      <DependentUpon>201610180629187_AlterRound.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610180659381_AlterRound1.resx">
-      <DependentUpon>201610180659381_AlterRound1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610191402353_AlterPlayDetail.resx">
-      <DependentUpon>201610191402353_AlterPlayDetail.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610191425180_AlterGame.resx">
-      <DependentUpon>201610191425180_AlterGame.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610191440420_Alter.resx">
-      <DependentUpon>201610191440420_Alter.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201610200720165_InitialCreate.resx">
+      <DependentUpon>201610200720165_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Play.resx">
       <DependentUpon>Play.cs</DependentUpon>

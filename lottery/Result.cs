@@ -19,7 +19,6 @@ namespace lottery
         {
             this.gameId = gameId;
             InitializeComponent();
-            lbGameOrder.Text = $"这是第{gameId}局的结果";
             InitView();
         }
 
@@ -31,9 +30,22 @@ namespace lottery
         private async void InitView()
         {
             var game = await db.Game.SingleOrDefaultAsync(g => g.GameID == gameId);
+            if (game==null)
+            {
+                lbErrorMsg.Text = "出错了！请重新开局";
+                return;
+            }
+            var rounds = db.Round.Where(r => r.GameID == gameId); //本局所有轮
+            var lastRound = await rounds.OrderByDescending(r => r.RoundID).FirstOrDefaultAsync();
+            lbFee.Text = lbFee.Text + (await rounds.SumAsync(r => r.Fee));
+            if (lastRound==null)
+            {
+                lbErrorMsg.Text = "出错了！本局还没玩过一轮";
+                return;
+            }
+            lbDealerBalance.Text = lbDealerBalance.Text + lastRound.DealerBalance.ToString();
             lbDealerName.Text = lbDealerName.Text + game.Dealer.Name;
             lbBetMoney.Text = lbBetMoney.Text + game.BetMoney.ToString();
-            lbFee.Text = lbFee.Text + (game.FeePercent * game.BetMoney).ToString();
             var list = await db.PlayDetail.Where(p=>p.Round.GameID== gameId).ToListAsync(); //查出当前轮的所有情况
             var distinctPlayer = list.Select(l => l.PlayerID).Distinct();
             IEnumerable<PlayDetail> finalList = null;

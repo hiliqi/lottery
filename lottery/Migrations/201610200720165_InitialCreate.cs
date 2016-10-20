@@ -12,7 +12,7 @@ namespace lottery.Migrations
                 c => new
                     {
                         DealerID = c.Int(nullable: false, identity: true),
-                        Name = c.String(unicode: false),
+                        Name = c.String(maxLength: 50, unicode: false),
                         IsDel = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.DealerID);
@@ -25,6 +25,7 @@ namespace lottery.Migrations
                         GameOrder = c.Int(nullable: false),
                         BetMoney = c.Double(nullable: false),
                         Profit = c.Double(nullable: false),
+                        FeePercent = c.Double(nullable: false),
                         DealerID = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.GameID)
@@ -40,6 +41,7 @@ namespace lottery.Migrations
                         BetMoney = c.Double(nullable: false),
                         Balance = c.Double(nullable: false),
                         Multiple = c.Int(nullable: false),
+                        FinalMultiple = c.Int(nullable: false),
                         RoundID = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.PlayDetailID)
@@ -53,7 +55,7 @@ namespace lottery.Migrations
                 c => new
                     {
                         PlayerID = c.Int(nullable: false, identity: true),
-                        Name = c.String(unicode: false),
+                        Name = c.String(maxLength: 50, unicode: false),
                         IsDel = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.PlayerID);
@@ -65,6 +67,10 @@ namespace lottery.Migrations
                         RoundID = c.Int(nullable: false, identity: true),
                         RoundOrder = c.Int(nullable: false),
                         DealerBalance = c.Double(nullable: false),
+                        TotalMoney = c.Double(nullable: false),
+                        DealerProfit = c.Double(nullable: false),
+                        TotalBetMoney = c.Double(nullable: false),
+                        Fee = c.Double(nullable: false),
                         GameID = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.RoundID)
