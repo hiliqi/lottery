@@ -29,34 +29,11 @@ namespace lottery
 
         private void UserListInit()
         {
-            lbMsg.Text = "正在加载庄闲家名单";
-            lbDealer.DataSource = db.Dealer.Where(d => d.IsDel == false).ToList();
-            lbDealer.DisplayMember = "Name";
-            lbDealer.ValueMember = "DealerID";
+            lbMsg.Text = "正在加载玩家名单";
             lbPlayer.DataSource = db.Player.Where(d => d.IsDel == false).ToList();
             lbPlayer.DisplayMember = "Name";
             lbPlayer.ValueMember = "PlayerID";
             lbMsg.Text = string.Empty;
-        }
-
-        private void btnAddDealer_Click(object sender, EventArgs e)
-        {
-            Thread t = new Thread(()=> {
-                string[] list = txtName.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var item in list)
-                {
-                    if (Helper.ExistUser(item.Trim(), 0))
-                    {
-                        MessageBox.Show($"已经存在和{item.Trim()}重名的庄家，不能重复添加");
-                        return;
-                    }
-                    db.Dealer.Add(new Dealer() { Name = item.Trim(), IsDel = false });
-                }
-                db.SaveChanges();
-                txtName.Clear();
-                UserListInit();
-            });
-            t.Start();
         }
 
         private void btnAddPlayer_Click(object sender, EventArgs e)
@@ -66,9 +43,9 @@ namespace lottery
                   string[] list = txtName.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                   foreach (var item in list)
                   {
-                      if (Helper.ExistUser(item.Trim(),1))
+                      if (Helper.ExistUser(item.Trim()))
                       {
-                          MessageBox.Show($"已经存在和{item.Trim()}重名的闲家，不能重复添加");
+                          MessageBox.Show($"已经存在和{item.Trim()}重名的玩家，不能重复添加");
                           return;
                       }
                       db.Player.Add(new Player() { Name = item.Trim(), IsDel = false });
@@ -80,30 +57,16 @@ namespace lottery
             t.Start();
         }
 
-        private void btnDelDealer_Click(object sender, EventArgs e)
-        {
-            Thread t = new Thread(() =>
-              {
-                  int id = 0;
-                  bool b = int.TryParse(lbDealer.SelectedValue.ToString(), out id);
-                  if (!b)
-                  {
-                      MessageBox.Show("删除用户出错");
-                      return;
-                  }
-                  var model = db.Dealer.SingleOrDefault(d => d.DealerID == id);
-                  model.IsDel = true;
-                  db.Entry(model).State = EntityState.Modified;
-                  db.SaveChanges();
-                  UserListInit();
-              });
-            t.Start();
-        }
 
         private void btnDelPlayer_Click(object sender, EventArgs e)
         {
             Thread t = new Thread(() =>
               {
+                  if (lbPlayer.SelectedValue==null)
+                  {
+                      MessageBox.Show("没有用户了");
+                      return;
+                  }
                   int id = 0;
                   bool b = int.TryParse(lbPlayer.SelectedValue.ToString(), out id);
                   if (!b)

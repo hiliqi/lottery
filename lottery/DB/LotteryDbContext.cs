@@ -16,23 +16,16 @@
         public LotteryDbContext()
             : base(nameOrConnectionString: "LotteryDbContext")
         {
+            Database.SetInitializer<LotteryDbContext>(new CreateDatabaseIfNotExists<LotteryDbContext>());
         }
 
         //为您要在模型中包含的每种实体类型都添加 DbSet。有关配置和使用 Code First  模型
         //的详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=390109。
 
          public virtual DbSet<Player> Player { get; set; }
-        public virtual DbSet<Dealer> Dealer { get; set; }
         public virtual DbSet<Round> Round { get; set; }
         public virtual DbSet<Game> Game { get; set; }
         public virtual DbSet<PlayDetail> PlayDetail { get; set; }
-
-        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        //{
-        //    Database.SetInitializer<LotteryDbContext>(new CreateDatabaseIfNotExists<LotteryDbContext>());
-
-        //    base.OnModelCreating(modelBuilder);
-        //}
 
     }
 }

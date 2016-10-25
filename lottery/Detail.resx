@@ -117,10 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Target" xml:space="preserve">
-    <value>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</value>
-  </data>
-  <data name="DefaultSchema" xml:space="preserve">
-    <value>dbo</value>
-  </data>
+  <metadata name="BetMoney.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Multiple.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="FinalMultiple.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Profit.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Balance.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="RoundOrder.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
 </root>

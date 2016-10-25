@@ -10,10 +10,11 @@ namespace lottery
     {
         public int GameID { get; set; }      
         public int GameOrder { get; set; }//局数       
-        public double BetMoney { get; set; }//开庄金额       
-        public double Profit { get; set; }//庄家盈亏
+        public double BetMoney { get; set; }//开庄金额  
+        public double Balance { get; set; } //结算金额     
         public double FeePercent { get; set; } //本局平台抽成比例
-        public int DealerID { get; set; }
-        public virtual Dealer Dealer { get; set; }
+        public double Fee { get; set; }
+        public int PlayerID { get; set; }
+        public virtual Player Player { get; set; }
     }
 }

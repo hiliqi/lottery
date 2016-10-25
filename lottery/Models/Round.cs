@@ -14,7 +14,6 @@ namespace lottery
         public double TotalMoney { get; set; } //总账面
         public double DealerProfit { get; set; } //庄家盈亏
         public double TotalBetMoney { get; set; } //总投注额
-        public double Fee { get; set; } //每轮抽成
         public int GameID { get; set; }
         public virtual Game Game { get; set; }
     }

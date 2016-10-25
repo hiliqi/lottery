@@ -29,17 +29,15 @@
         private void InitializeComponent()
         {
             this.resultView = new System.Windows.Forms.DataGridView();
-            this.PlayerID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PlayerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TotalBetMoney = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Profit = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PlayRounds = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lbDealerName = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.lbBetMoney = new System.Windows.Forms.Label();
             this.lbErrorMsg = new System.Windows.Forms.Label();
             this.lbDealerBalance = new System.Windows.Forms.Label();
             this.lbFee = new System.Windows.Forms.Label();
+            this.PlayerID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PlayerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Profit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.resultView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -49,44 +47,13 @@
             this.resultView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.PlayerID,
             this.PlayerName,
-            this.TotalBetMoney,
-            this.Profit,
-            this.PlayRounds});
+            this.Profit});
             this.resultView.Location = new System.Drawing.Point(247, 79);
             this.resultView.Name = "resultView";
             this.resultView.RowTemplate.Height = 23;
             this.resultView.Size = new System.Drawing.Size(583, 392);
             this.resultView.TabIndex = 0;
-            // 
-            // PlayerID
-            // 
-            this.PlayerID.HeaderText = "闲家ID";
-            this.PlayerID.Name = "PlayerID";
-            this.PlayerID.ReadOnly = true;
-            // 
-            // PlayerName
-            // 
-            this.PlayerName.HeaderText = "闲家名称";
-            this.PlayerName.Name = "PlayerName";
-            this.PlayerName.ReadOnly = true;
-            // 
-            // TotalBetMoney
-            // 
-            this.TotalBetMoney.HeaderText = "总投注";
-            this.TotalBetMoney.Name = "TotalBetMoney";
-            this.TotalBetMoney.ReadOnly = true;
-            // 
-            // Profit
-            // 
-            this.Profit.HeaderText = "总盈亏";
-            this.Profit.Name = "Profit";
-            this.Profit.ReadOnly = true;
-            // 
-            // PlayRounds
-            // 
-            this.PlayRounds.HeaderText = "参与轮数";
-            this.PlayRounds.Name = "PlayRounds";
-            this.PlayRounds.ReadOnly = true;
+            this.resultView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.resultView_CellDoubleClick);
             // 
             // lbDealerName
             // 
@@ -142,6 +109,24 @@
             this.lbFee.TabIndex = 8;
             this.lbFee.Text = "本局抽成：";
             // 
+            // PlayerID
+            // 
+            this.PlayerID.HeaderText = "闲家ID";
+            this.PlayerID.Name = "PlayerID";
+            this.PlayerID.ReadOnly = true;
+            // 
+            // PlayerName
+            // 
+            this.PlayerName.HeaderText = "闲家名称";
+            this.PlayerName.Name = "PlayerName";
+            this.PlayerName.ReadOnly = true;
+            // 
+            // Profit
+            // 
+            this.Profit.HeaderText = "总盈亏";
+            this.Profit.Name = "Profit";
+            this.Profit.ReadOnly = true;
+            // 
             // Result
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -155,6 +140,7 @@
             this.Controls.Add(this.lbDealerName);
             this.Controls.Add(this.resultView);
             this.Name = "Result";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "结果预览";
             ((System.ComponentModel.ISupportInitialize)(this.resultView)).EndInit();
             this.ResumeLayout(false);
@@ -165,16 +151,14 @@
         #endregion
 
         private System.Windows.Forms.DataGridView resultView;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PlayerID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PlayerName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn TotalBetMoney;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Profit;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PlayRounds;
         private System.Windows.Forms.Label lbDealerName;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Label lbBetMoney;
         private System.Windows.Forms.Label lbErrorMsg;
         private System.Windows.Forms.Label lbDealerBalance;
         private System.Windows.Forms.Label lbFee;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PlayerID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PlayerName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Profit;
     }
 }
