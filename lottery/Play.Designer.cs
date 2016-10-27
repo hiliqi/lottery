@@ -344,6 +344,7 @@
             this.ItemEdit.HeaderText = "编辑";
             this.ItemEdit.Name = "ItemEdit";
             this.ItemEdit.Text = "修改";
+            this.ItemEdit.UseColumnTextForButtonValue = true;
             // 
             // Play
             // 

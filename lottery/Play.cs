@@ -350,18 +350,8 @@ namespace lottery
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
                 e.RowIndex >= 0)
             {
-                //edit = new Edit(
-                //     int.Parse(senderGrid.Rows[e.RowIndex].Cells["PlayDetailID"].Value.ToString()),
-                //     senderGrid.Rows[e.RowIndex].Cells["Player"].Value.ToString(),
-                //     double.Parse(senderGrid.Rows[e.RowIndex].Cells["Money"].Value.ToString()),
-                //     int.Parse(senderGrid.Rows[e.RowIndex].Cells["Multiple"].Value.ToString()),
-                //     dealerPoint,
-                //     double.Parse(senderGrid.Rows[e.RowIndex].Cells["LastSurplus"].Value.ToString()),
-                //     this
-                // );
-                //edit.FormClosed += Edit_FormClosed;
-                //edit.ShowDialog();        
-                bool b = double.TryParse(txtBetMoney.Text, out betMoney);
+                       
+                bool b = double.TryParse(senderGrid.Rows[e.RowIndex].Cells["Money"].Value.ToString(), out betMoney);
                 b = int.TryParse(senderGrid.Rows[e.RowIndex].Cells["Multiple"].Value.ToString(), out multiple);
                 if (!b)
                 {
