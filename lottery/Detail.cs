@@ -13,9 +13,10 @@ namespace lottery
 {
     public partial class Detail : Form
     {
-        private LotteryDbContext db = new LotteryDbContext();
+        private LotteryDbContext db;
         public Detail(int playerId, int gameId)
         {
+            db =  new LotteryDbContext();
             InitializeComponent();
             Init(playerId,gameId);
         }
@@ -23,13 +24,13 @@ namespace lottery
         private async void Init(int playerId, int gameId)
         {
             lbName.Text = (await db.Player.SingleOrDefaultAsync(p => p.PlayerID == playerId)).Name;
-            var list = await db.PlayDetail.Where(p => p.PlayerID == playerId && p.Round.GameID==gameId).ToListAsync();
+            var list = await db.PlayDetail.Where(p => p.PlayerID == playerId && p.Round.GameID==gameId).Include(p=>p.Round).ToListAsync();
             foreach (var item in list)
             {
                 int index = detailView.Rows.Add();
                 detailView.Rows[index].Cells["BetMoney"].Value = item.BetMoney;
                 detailView.Rows[index].Cells["Multiple"].Value = item.Multiple;
-                detailView.Rows[index].Cells["FinalMultiple"].Value = item.FinalMultiple;
+                detailView.Rows[index].Cells["DealerPoint"].Value = item.Round.DealerPoint;
                 detailView.Rows[index].Cells["Profit"].Value = item.Profit;
                 detailView.Rows[index].Cells["Balance"].Value = item.Balance;
                 detailView.Rows[index].Cells["RoundOrder"].Value = item.Round.RoundOrder;

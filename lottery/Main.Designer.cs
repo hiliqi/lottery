@@ -15,9 +15,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnUserManager;
         private System.Windows.Forms.Label lbMsg;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox txtFeePercent;
+        private System.Windows.Forms.Button btnReport;
     }
 }
 

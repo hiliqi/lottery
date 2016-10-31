@@ -32,7 +32,7 @@
             this.lbName = new System.Windows.Forms.Label();
             this.BetMoney = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Multiple = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.FinalMultiple = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DealerPoint = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Profit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Balance = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RoundOrder = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -45,7 +45,7 @@
             this.detailView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.BetMoney,
             this.Multiple,
-            this.FinalMultiple,
+            this.DealerPoint,
             this.Profit,
             this.Balance,
             this.RoundOrder});
@@ -76,11 +76,11 @@
             this.Multiple.Name = "Multiple";
             this.Multiple.ReadOnly = true;
             // 
-            // FinalMultiple
+            // DealerPoint
             // 
-            this.FinalMultiple.HeaderText = "最终倍数";
-            this.FinalMultiple.Name = "FinalMultiple";
-            this.FinalMultiple.ReadOnly = true;
+            this.DealerPoint.HeaderText = "庄家点数";
+            this.DealerPoint.Name = "DealerPoint";
+            this.DealerPoint.ReadOnly = true;
             // 
             // Profit
             // 
@@ -109,7 +109,7 @@
             this.Controls.Add(this.detailView);
             this.Name = "Detail";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Detail";
+            this.Text = "详情";
             ((System.ComponentModel.ISupportInitialize)(this.detailView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -122,7 +122,7 @@
         private System.Windows.Forms.Label lbName;
         private System.Windows.Forms.DataGridViewTextBoxColumn BetMoney;
         private System.Windows.Forms.DataGridViewTextBoxColumn Multiple;
-        private System.Windows.Forms.DataGridViewTextBoxColumn FinalMultiple;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DealerPoint;
         private System.Windows.Forms.DataGridViewTextBoxColumn Profit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Balance;
         private System.Windows.Forms.DataGridViewTextBoxColumn RoundOrder;

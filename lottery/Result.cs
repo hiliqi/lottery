@@ -13,10 +13,11 @@ namespace lottery
 {
     public partial class Result : Form
     {
-        private LotteryDbContext db = new LotteryDbContext();
+        private LotteryDbContext db;
         private int gameId;
         public Result(int gameId)
         {
+            db = new LotteryDbContext();
             this.gameId = gameId;
             InitializeComponent();
             InitView();
@@ -36,17 +37,17 @@ namespace lottery
                 return;
             }
             var rounds = db.Round.Where(r => r.GameID == gameId); //本局所有轮
-            var lastRound = await rounds.OrderByDescending(r => r.RoundID).FirstOrDefaultAsync();
+            var lastRound = await rounds.OrderByDescending(r => r.RoundID).FirstOrDefaultAsync(); //查出最后一轮
             if (lastRound == null)
             {
                 lbErrorMsg.Text = "出错了！本局还没玩过一轮";
                 return;
             }
-            lbDealerBalance.Text = lbDealerBalance.Text + lastRound.DealerBalance.ToString();
-            lbDealerName.Text = lbDealerName.Text + game.Player.Name;
-            lbBetMoney.Text = lbBetMoney.Text + game.BetMoney.ToString();
-            lbFee.Text = lbFee.Text + game.Fee;
-            var list = await db.PlayDetail.Where(p => p.Round.GameID == gameId).ToListAsync(); //查出当前轮的所有情况
+            lbDealerBalance.Text = lbDealerBalance.Text + lastRound.DealerBalance.ToString(); //庄家结余
+            lbDealerName.Text = lbDealerName.Text + game.Player.Name; //庄家名称
+            lbBetMoney.Text = lbBetMoney.Text + game.BetMoney.ToString(); //开庄金额
+            lbFee.Text = lbFee.Text + game.Fee; //结算金额
+            var list = await db.PlayDetail.Where(p => p.Round.GameID == gameId).ToListAsync(); //查出当前局的所有情况
             var distinctPlayer = list.Select(l => l.PlayerID).Distinct();
             IEnumerable<PlayDetail> finalList = null;
             foreach (var id in distinctPlayer)
@@ -62,17 +63,13 @@ namespace lottery
 
         private void resultView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex != 0)
+            int playerID = 0;
+            bool b = int.TryParse(resultView.Rows[e.RowIndex].Cells["PlayerID"].Value.ToString(), out playerID);
+            if (!b)
             {
-                int playerID = 0;
-                bool b = int.TryParse(resultView.Rows[e.RowIndex].Cells["PlayerID"].Value.ToString(), out playerID);
-                if (!b)
-                {
-                    MessageBox.Show("用户ID出错了！");
-                }
-                new Detail(playerID, gameId).ShowDialog();
+                MessageBox.Show("用户ID出错了！");
             }
-
+            new Detail(playerID, gameId).ShowDialog();
         }
     }
 }

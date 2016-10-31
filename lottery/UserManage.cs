@@ -14,9 +14,10 @@ namespace lottery
 {
     public partial class UserManage : Form
     {
-        LotteryDbContext db = new LotteryDbContext();
+        LotteryDbContext db;
         public UserManage()
         {
+            db = new LotteryDbContext();
             InitializeComponent();
             TextBox.CheckForIllegalCrossThreadCalls = false;
             ListBox.CheckForIllegalCrossThreadCalls = false;

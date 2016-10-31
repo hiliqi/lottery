@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnAddPlayer = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.txtName = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.lbMsg = new System.Windows.Forms.Label();
             this.btnDelPlayer = new System.Windows.Forms.Button();
             this.lbPlayer = new System.Windows.Forms.ListBox();
-            this.lbMsg = new System.Windows.Forms.Label();
-            this.btnAddPlayer = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -51,6 +51,16 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "用户添加";
+            // 
+            // btnAddPlayer
+            // 
+            this.btnAddPlayer.Location = new System.Drawing.Point(162, 55);
+            this.btnAddPlayer.Name = "btnAddPlayer";
+            this.btnAddPlayer.Size = new System.Drawing.Size(75, 23);
+            this.btnAddPlayer.TabIndex = 4;
+            this.btnAddPlayer.Text = "添加玩家";
+            this.btnAddPlayer.UseVisualStyleBackColor = true;
+            this.btnAddPlayer.Click += new System.EventHandler(this.btnAddPlayer_Click);
             // 
             // btnPlay
             // 
@@ -82,6 +92,14 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "用户删除";
             // 
+            // lbMsg
+            // 
+            this.lbMsg.AutoSize = true;
+            this.lbMsg.Location = new System.Drawing.Point(31, 30);
+            this.lbMsg.Name = "lbMsg";
+            this.lbMsg.Size = new System.Drawing.Size(0, 12);
+            this.lbMsg.TabIndex = 4;
+            // 
             // btnDelPlayer
             // 
             this.btnDelPlayer.Location = new System.Drawing.Point(159, 57);
@@ -101,24 +119,6 @@
             this.lbPlayer.Size = new System.Drawing.Size(120, 340);
             this.lbPlayer.TabIndex = 2;
             // 
-            // lbMsg
-            // 
-            this.lbMsg.AutoSize = true;
-            this.lbMsg.Location = new System.Drawing.Point(31, 30);
-            this.lbMsg.Name = "lbMsg";
-            this.lbMsg.Size = new System.Drawing.Size(0, 12);
-            this.lbMsg.TabIndex = 4;
-            // 
-            // btnAddPlayer
-            // 
-            this.btnAddPlayer.Location = new System.Drawing.Point(162, 55);
-            this.btnAddPlayer.Name = "btnAddPlayer";
-            this.btnAddPlayer.Size = new System.Drawing.Size(75, 23);
-            this.btnAddPlayer.TabIndex = 4;
-            this.btnAddPlayer.Text = "添加玩家";
-            this.btnAddPlayer.UseVisualStyleBackColor = true;
-            this.btnAddPlayer.Click += new System.EventHandler(this.btnAddPlayer_Click);
-            // 
             // UserManage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -127,7 +127,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "UserManage";
-            this.Text = "UserManage";
+            this.Text = "玩家管理";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);

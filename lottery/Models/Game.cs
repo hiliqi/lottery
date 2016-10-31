@@ -14,6 +14,7 @@ namespace lottery
         public double Balance { get; set; } //结算金额     
         public double FeePercent { get; set; } //本局平台抽成比例
         public double Fee { get; set; }
+        public DateTime PlayTime { get; set; }
         public int PlayerID { get; set; }
         public virtual Player Player { get; set; }
     }

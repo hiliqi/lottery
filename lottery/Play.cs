@@ -15,25 +15,31 @@ namespace lottery
 
     public partial class Play : Form
     {
-        private string dealerName = string.Empty; //庄家名称
-        private double betMoney = 0; //开庄金额
-        private int dealerPoint = 0; //庄家点数
-        private int gameID = 0;
-        private int gameOrder = 0;
-        private int currentRoundId = -1; //当前轮ID
-        private int currentRoundOrder = 0; //当前轮数
-        private int lastRoundId = -1;
-        private int lastRoundOrder = 0;//上一轮数
-        double dealerBalance = 0;//庄家结余
-        private LotteryDbContext db = new LotteryDbContext();
-        private bool isNewRound = false;
+        private string dealerName; //庄家名称
+        private int dealerID;
+        private double betMoney; //开庄金额
+        private int dealerPoint; //庄家点数
+        private int gameID;
+        private int gameOrder;
+        private int currentRoundId; //当前轮ID
+        private int currentRoundOrder; //当前轮数
+        private int lastRoundId;
+        private int lastRoundOrder;//上一轮数
+        double dealerBalance;//庄家结余
+        private bool isAddMoney;
+        private LotteryDbContext db;
+        private bool isNewRound;
         private List<string> tempPlayerName = new List<string>(); //保存从数据库里查出来的闲家名字，用来检查新添加的闲家重名
 
-        public Play(string dealerName, int betMoney, int gameID)
+        public Play(string dealerName, int betMoney, int gameID,int dealerID)
         {
             this.dealerName = dealerName;
+            this.dealerID = dealerID;
             this.betMoney = betMoney;
             this.gameID = gameID;
+            isAddMoney = false;
+            isNewRound = false;
+            db = new LotteryDbContext();
             InitializeComponent();
             txtDealer.Text = dealerName;
             var game = db.Game.SingleOrDefault(g => g.GameID == gameID);
@@ -53,6 +59,10 @@ namespace lottery
             var list = await db.Player.ToListAsync();
             foreach (var player in list)
             {
+                if (player.PlayerID==dealerID) //如果是庄家
+                {
+                    continue;
+                }
                 int index = lotteryView.Rows.Add();
                 var playDetail = await db.PlayDetail.SingleOrDefaultAsync(p => p.PlayerID == player.PlayerID && p.Round.RoundOrder == currentRoundOrder && p.Round.GameID == gameID);
                 if (playDetail == null) //如果该闲家本盘未参与,则查出最近一盘数据
@@ -99,6 +109,10 @@ namespace lottery
             var list = await db.Player.Where(p => p.IsDel == false).ToListAsync();
             foreach (var player in list)
             {
+                if (player.PlayerID==dealerID)
+                {
+                    continue;
+                }
                 int index = lotteryView.Rows.Add();
                 lotteryView.Rows[index].Cells["PlayerID"].Value = player.PlayerID;
                 lotteryView.Rows[index].Cells["Player"].Value = player.Name;
@@ -124,7 +138,7 @@ namespace lottery
             Round round = new Round() { GameID = gameID, RoundOrder = currentRoundOrder };
             var model = db.Round.Add(round);
             db.SaveChanges();
-            betMoney = dealerBalance; //新一轮开始时，本轮庄家投注等于上一轮的庄家结余
+            //betMoney = dealerBalance; //新一轮开始时，本轮庄家投注等于上一轮的庄家结余
             currentRoundId = model.RoundID;
             isNewRound = true; //表示新的一轮
         }
@@ -132,6 +146,7 @@ namespace lottery
         //开始计算
         private async void btnCal_Click(object sender, EventArgs e)
         {
+
             if (!isNewRound)
             {
                 MessageBox.Show("当前轮已结束，请开始新的一轮");
@@ -243,6 +258,7 @@ namespace lottery
             }
             
             UpdateRoundStatus(); //更新本轮状态
+            UpdateGameStatus(); //更新本局状态
             ReLoadTable();
             isNewRound = false; //表示该轮已经结束  
         }
@@ -254,10 +270,11 @@ namespace lottery
             {
                 game.Balance = dealerBalance;
             }
-            game.Fee = betMoney * 0.03;
+            game.BetMoney = betMoney;
+            game.Fee = betMoney * 0.02;
             if (game.Balance>0)
             {
-                game.Fee = game.Fee + game.Balance * 0.02;
+                game.Fee = game.Fee + game.Balance * 0.03;
             }
             db.Entry(game).State = EntityState.Modified;
             await db.SaveChangesAsync();
@@ -286,6 +303,8 @@ namespace lottery
             dealerBalance = lastRoundBalance + dealerProfit;
             round.DealerProfit = dealerProfit;//庄家盈亏
             round.DealerBalance = dealerBalance; //庄家结余
+            round.DealerPoint = dealerPoint; //庄家点数
+            round.IsAddMoney = isAddMoney;
             db.Entry(round).State = EntityState.Modified;
             await db.SaveChangesAsync();
             txtDealerBalance.Text = dealerBalance.ToString();
@@ -385,6 +404,7 @@ namespace lottery
                 db.SaveChanges();
                 ReLoadTable();
                 UpdateRoundStatus();
+                UpdateGameStatus();
             }
         }
 
@@ -392,6 +412,23 @@ namespace lottery
         {
             MessageBox.Show("Test");
             ReLoadTable();
+        }
+
+        private void btnAddDealMoney_Click(object sender, EventArgs e)
+        {
+            double temp = 0;
+            if (!double.TryParse(txtAddDeal.Text,out temp))
+            {
+                MessageBox.Show("请输入正确的追庄金额");
+                return;
+            }
+            betMoney += temp; //追加开庄金额
+            dealerBalance += temp; //追加庄家结余            
+            isAddMoney = true; //表明本轮追庄
+            UpdateRoundStatus();
+            UpdateGameStatus();
+            txtBetMoney.Text = betMoney.ToString();
+            txtAddDeal.Clear();
         }
     }
 }
