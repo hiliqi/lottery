@@ -18,7 +18,7 @@ namespace lottery
 
         public Main()
         {
-            db = new LotteryDbContext();
+            db = DBSession.GetDbContext();
             InitializeComponent();
         }
 
@@ -30,9 +30,9 @@ namespace lottery
             this.txtMoney = new System.Windows.Forms.TextBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnReport = new System.Windows.Forms.Button();
             this.lbMsg = new System.Windows.Forms.Label();
             this.btnUserManager = new System.Windows.Forms.Button();
-            this.btnReport = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -94,6 +94,16 @@ namespace lottery
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "开庄";
             // 
+            // btnReport
+            // 
+            this.btnReport.Location = new System.Drawing.Point(156, 159);
+            this.btnReport.Name = "btnReport";
+            this.btnReport.Size = new System.Drawing.Size(75, 23);
+            this.btnReport.TabIndex = 5;
+            this.btnReport.Text = "报表查看";
+            this.btnReport.UseVisualStyleBackColor = true;
+            this.btnReport.Click += new System.EventHandler(this.btnReport_Click);
+            // 
             // lbMsg
             // 
             this.lbMsg.AutoSize = true;
@@ -111,15 +121,6 @@ namespace lottery
             this.btnUserManager.Text = "管理玩家";
             this.btnUserManager.UseVisualStyleBackColor = true;
             this.btnUserManager.Click += new System.EventHandler(this.btnUserManager_Click);
-            // 
-            // btnReport
-            // 
-            this.btnReport.Location = new System.Drawing.Point(156, 159);
-            this.btnReport.Name = "btnReport";
-            this.btnReport.Size = new System.Drawing.Size(75, 23);
-            this.btnReport.TabIndex = 5;
-            this.btnReport.Text = "报表查看";
-            this.btnReport.UseVisualStyleBackColor = true;
             // 
             // Main
             // 
@@ -150,18 +151,7 @@ namespace lottery
             {
                 MessageBox.Show("请输入正确的金额");
                 return;
-            }
-            //b = int.TryParse(txtFeePercent.Text, out percent);
-            //if (!b)
-            //{
-            //    MessageBox.Show("抽成比例需输入0-100的整数");
-            //    return;
-            //}
-            //if (percent < 0 || percent > 100)
-            //{
-            //    MessageBox.Show("抽成比例需输入0-100的整数");
-            //    return;
-            //}
+            }          
             if (cmbDealer.SelectedValue == null)
             {
                 MessageBox.Show("请选择庄家");
@@ -184,11 +174,15 @@ namespace lottery
                 GameOrder = gameOrder,
                 BetMoney = money,
                 PlayerID = cmbDealerID,
-                PlayTime = DateTime.Now
+                PlayTime = DateTime.Now,
+                Year = DateTime.Now.Year,
+                Month = DateTime.Now.Month,
+                Day = DateTime.Now.Day,
+                Fee=money*0.02
             };
             db.Game.Add(model);
             db.SaveChanges();
-            Play play = new Play(cmbDealer.Text, money, model.GameID,cmbDealerID);
+            Play play = new Play(cmbDealer.Text, money*0.98, model.GameID,cmbDealerID);
             play.ShowDialog();
             txtMoney.Clear();
         }
@@ -210,6 +204,11 @@ namespace lottery
             cmbDealer.DisplayMember = "Name";
             cmbDealer.ValueMember = "PlayerID";
             lbMsg.Text = string.Empty;
+        }
+
+        private void btnReport_Click(object sender, EventArgs e)
+        {
+            new Report().ShowDialog();
         }
     }
 }

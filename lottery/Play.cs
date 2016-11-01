@@ -31,7 +31,7 @@ namespace lottery
         private bool isNewRound;
         private List<string> tempPlayerName = new List<string>(); //保存从数据库里查出来的闲家名字，用来检查新添加的闲家重名
 
-        public Play(string dealerName, int betMoney, int gameID,int dealerID)
+        public Play(string dealerName, double betMoney, int gameID,int dealerID)
         {
             this.dealerName = dealerName;
             this.dealerID = dealerID;
@@ -39,12 +39,11 @@ namespace lottery
             this.gameID = gameID;
             isAddMoney = false;
             isNewRound = false;
-            db = new LotteryDbContext();
+            db = DBSession.GetDbContext();
             InitializeComponent();
             txtDealer.Text = dealerName;
             var game = db.Game.SingleOrDefault(g => g.GameID == gameID);
             gameOrder = game.GameOrder;
-            lbGameCount.Text = $"当前第{gameOrder}局";
             dealerBalance = betMoney; //一开始庄家的结余等于投注金额
             txtBetMoney.Text = betMoney.ToString();
             txtDealerBalance.Text = betMoney.ToString();
@@ -56,7 +55,7 @@ namespace lottery
         public async void ReLoadTable()
         {
             lotteryView.Rows.Clear();
-            var list = await db.Player.ToListAsync();
+            var list = await db.Player.Where(p=>p.IsDel==false).ToListAsync();
             foreach (var player in list)
             {
                 if (player.PlayerID==dealerID) //如果是庄家
@@ -72,7 +71,6 @@ namespace lottery
                     lotteryView.Rows[index].Cells["Player"].Value = player.Name;
                     if (playDetail == null)//如果没有最近一盘
                     {
-                        //lotteryView.Rows[index].Cells["LastSurplus"].Value = 0;
                     }
                     else
                     {
@@ -86,6 +84,7 @@ namespace lottery
                     lotteryView.Rows[index].Cells["Player"].Value = player.Name;
                     lotteryView.Rows[index].Cells["Money"].Value = playDetail.BetMoney;
                     lotteryView.Rows[index].Cells["Multiple"].Value = playDetail.FinalMultiple;
+                    lotteryView.Rows[index].Cells["OriginNumber"].Value = playDetail.OriginNumber;
                     lotteryView.Rows[index].Cells["PlayerProfit"].Value = playDetail.Profit;
                     lotteryView.Rows[index].Cells["DealerProfit"].Value = -playDetail.Profit;
                     //查出该玩家在本局的上轮情况
@@ -135,12 +134,13 @@ namespace lottery
             {
                 currentRoundOrder = 1;
             }
-            Round round = new Round() { GameID = gameID, RoundOrder = currentRoundOrder };
+            Round round = new Round() { GameID = gameID, RoundOrder = currentRoundOrder,PlayTime=DateTime.Now };
             var model = db.Round.Add(round);
             db.SaveChanges();
             //betMoney = dealerBalance; //新一轮开始时，本轮庄家投注等于上一轮的庄家结余
             currentRoundId = model.RoundID;
             isNewRound = true; //表示新的一轮
+            lbTime.Text = DateTime.Now.ToLongDateString () + " " + DateTime.Now.ToLongTimeString();
         }
 
         //开始计算
@@ -152,17 +152,13 @@ namespace lottery
                 MessageBox.Show("当前轮已结束，请开始新的一轮");
                 return;
             }
-            bool b = int.TryParse(txtDealerPoint.Text, out dealerPoint);
-            if (!b)
+            dealerPoint = Helper.CalPoint(txtDealerPoint.Text);
+            if (dealerPoint == -1)
             {
-                MessageBox.Show("输入正确的庄家点数");
+                MessageBox.Show("点数和倍数请输入三位数");
                 return;
             }
-            if (dealerPoint < 0)
-            {
-                MessageBox.Show("点数必须大于0");
-                return;
-            }
+            txtDealerPoint.Text = dealerPoint.ToString();
             PlayDetail detail = null;
             PlayDetail lastDetail = null;
             int finalMultiple = 0; //最终盈亏倍数
@@ -174,21 +170,27 @@ namespace lottery
                     row.Cells["Money"].Value = 0;
                     playerBetMoney = 0;
                 }
-                else if (!int.TryParse(row.Cells["Money"].Value.ToString(), out playerBetMoney))
+                else
                 {
-                    MessageBox.Show("请输入正确的投注金额和倍数");
-                    return;
+                    if (!int.TryParse(row.Cells["Money"].Value.ToString(),out playerBetMoney))
+                    {
+                        MessageBox.Show("请输入正确的金额");
+                    }
                 }
                 int multiple = 0; //闲家倍数
-                if (row.Cells["Multiple"].Value == null)
+                if (row.Cells["OriginNumber"].Value == null)
                 {
-                    row.Cells["Multiple"].Value = 0;
+                    row.Cells["OriginNumber"].Value = 0;
                     multiple = 0;
                 }
-                else if (!int.TryParse(row.Cells["Multiple"].Value.ToString(), out multiple))
+                else
                 {
-                    MessageBox.Show("请输入正确的投注金额和倍数");
-                    return;
+                    multiple = Helper.CalPoint(row.Cells["OriginNumber"].Value.ToString());
+                    if (multiple == -1)
+                    {
+                        MessageBox.Show("点数和倍数请输入三位数");
+                        return;
+                    }
                 }
                 int profit = 0;
                 double lastBalance = 0; //上把闲家结余
@@ -228,14 +230,14 @@ namespace lottery
                 if (multiple > dealerPoint) //闲家点数大，则闲家赢，按闲家倍数赔
                 {
                     finalMultiple = multiple;
-                    profit = playerBetMoney * multiple; //计算出盈亏
+                    profit = Math.Abs(playerBetMoney) * multiple; //计算出盈亏
                     balance = profit + lastBalance; //计算出本次闲家结余
                     //dealerProfit -= profit; //计算本把庄家盈亏
                 }
                 else if (multiple < dealerPoint) //闲家点数小，则庄家赢，按庄家点数赔
                 {
                     finalMultiple = -dealerPoint; //倍数变为庄家点数的负数
-                    profit = playerBetMoney * finalMultiple;
+                    profit = Math.Abs(playerBetMoney) * finalMultiple;
                     balance = profit + lastBalance; //计算出本次闲家结余
                    // dealerProfit += -profit; //计算本把庄家盈亏
                 }
@@ -250,6 +252,7 @@ namespace lottery
                 lbRoundCount.Text = $"当前第{currentRoundOrder}轮";
                 detail.BetMoney = playerBetMoney;
                 detail.Balance = balance;
+                detail.OriginNumber = row.Cells["OriginNumber"].Value.ToString();
                 detail.Multiple = multiple;
                 detail.FinalMultiple = finalMultiple;
                 detail.Profit = profit;
@@ -270,8 +273,7 @@ namespace lottery
             {
                 game.Balance = dealerBalance;
             }
-            game.BetMoney = betMoney;
-            game.Fee = betMoney * 0.02;
+            game.EndTime = DateTime.Now;
             if (game.Balance>0)
             {
                 game.Fee = game.Fee + game.Balance * 0.03;
@@ -304,6 +306,7 @@ namespace lottery
             round.DealerProfit = dealerProfit;//庄家盈亏
             round.DealerBalance = dealerBalance; //庄家结余
             round.DealerPoint = dealerPoint; //庄家点数
+            round.OriginNumber = txtDealerPoint.Text;
             round.IsAddMoney = isAddMoney;
             db.Entry(round).State = EntityState.Modified;
             await db.SaveChangesAsync();
@@ -358,23 +361,37 @@ namespace lottery
 
         private void lotteryView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            var senderGrid = (DataGridView)sender;
-            int multiple = 0;
-            int finalMultiple = 0;
-            double profit = 0;
-            double betMoney = 0;
-            double balance = 0;
-            double lastBalance = 0;
-            int playerDetailId = int.Parse(senderGrid.Rows[e.RowIndex].Cells["PlayDetailID"].Value.ToString());
+            var senderGrid = (DataGridView)sender;           
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
                 e.RowIndex >= 0)
             {
-                       
-                bool b = double.TryParse(senderGrid.Rows[e.RowIndex].Cells["Money"].Value.ToString(), out betMoney);
-                b = int.TryParse(senderGrid.Rows[e.RowIndex].Cells["Multiple"].Value.ToString(), out multiple);
-                if (!b)
+                int multiple = 0;
+                int finalMultiple = 0;
+                double profit = 0;
+                double betMoney = 0;
+                double balance = 0;
+                double lastBalance = 0;
+                if (senderGrid.Rows[e.RowIndex].Cells["PlayDetailID"].Value==null)
                 {
-                    MessageBox.Show("请输入正确的金额和倍数");
+                    MessageBox.Show("闲家为空");
+                    return;
+                }
+                if (senderGrid.Rows[e.RowIndex].Cells["Money"].Value==null)
+                {
+                    MessageBox.Show("金额为空");
+                    return;
+                }
+                if (senderGrid.Rows[e.RowIndex].Cells["Multiple"].Value==null)
+                {
+                    MessageBox.Show("倍数为空");
+                    return;
+                }
+                int playerDetailId = int.Parse(senderGrid.Rows[e.RowIndex].Cells["PlayDetailID"].Value.ToString());
+                bool b = double.TryParse(senderGrid.Rows[e.RowIndex].Cells["Money"].Value.ToString(), out betMoney);
+                multiple = Helper.CalPoint(senderGrid.Rows[e.RowIndex].Cells["OriginNumber"].Value.ToString());
+                if (multiple == -1)
+                {
+                    MessageBox.Show("点数和倍数请输入三位数");
                     return;
                 }
                 var model = db.PlayDetail.SingleOrDefault(p => p.PlayDetailID == playerDetailId);
@@ -396,6 +413,7 @@ namespace lottery
                     balance = lastBalance;
                 }
                 model.Multiple = multiple;
+                model.OriginNumber = senderGrid.Rows[e.RowIndex].Cells["OriginNumber"].Value.ToString();
                 model.BetMoney = betMoney;
                 model.FinalMultiple = finalMultiple;
                 model.Balance = balance;

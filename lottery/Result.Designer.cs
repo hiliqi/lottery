@@ -29,15 +29,17 @@
         private void InitializeComponent()
         {
             this.resultView = new System.Windows.Forms.DataGridView();
+            this.PlayerID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PlayerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Profit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lbDealerName = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.lbBetMoney = new System.Windows.Forms.Label();
             this.lbErrorMsg = new System.Windows.Forms.Label();
             this.lbDealerBalance = new System.Windows.Forms.Label();
             this.lbFee = new System.Windows.Forms.Label();
-            this.PlayerID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PlayerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Profit = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lbPlayTime = new System.Windows.Forms.Label();
+            this.lbEndTime = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.resultView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -54,6 +56,24 @@
             this.resultView.Size = new System.Drawing.Size(583, 392);
             this.resultView.TabIndex = 0;
             this.resultView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.resultView_CellDoubleClick);
+            // 
+            // PlayerID
+            // 
+            this.PlayerID.HeaderText = "闲家ID";
+            this.PlayerID.Name = "PlayerID";
+            this.PlayerID.ReadOnly = true;
+            // 
+            // PlayerName
+            // 
+            this.PlayerName.HeaderText = "闲家名称";
+            this.PlayerName.Name = "PlayerName";
+            this.PlayerName.ReadOnly = true;
+            // 
+            // Profit
+            // 
+            this.Profit.HeaderText = "总盈亏";
+            this.Profit.Name = "Profit";
+            this.Profit.ReadOnly = true;
             // 
             // lbDealerName
             // 
@@ -109,29 +129,31 @@
             this.lbFee.TabIndex = 8;
             this.lbFee.Text = "本局抽成：";
             // 
-            // PlayerID
+            // lbPlayTime
             // 
-            this.PlayerID.HeaderText = "闲家ID";
-            this.PlayerID.Name = "PlayerID";
-            this.PlayerID.ReadOnly = true;
+            this.lbPlayTime.AutoSize = true;
+            this.lbPlayTime.Location = new System.Drawing.Point(60, 41);
+            this.lbPlayTime.Name = "lbPlayTime";
+            this.lbPlayTime.Size = new System.Drawing.Size(65, 12);
+            this.lbPlayTime.TabIndex = 9;
+            this.lbPlayTime.Text = "开局时间：";
             // 
-            // PlayerName
+            // lbEndTime
             // 
-            this.PlayerName.HeaderText = "闲家名称";
-            this.PlayerName.Name = "PlayerName";
-            this.PlayerName.ReadOnly = true;
-            // 
-            // Profit
-            // 
-            this.Profit.HeaderText = "总盈亏";
-            this.Profit.Name = "Profit";
-            this.Profit.ReadOnly = true;
+            this.lbEndTime.AutoSize = true;
+            this.lbEndTime.Location = new System.Drawing.Point(386, 41);
+            this.lbEndTime.Name = "lbEndTime";
+            this.lbEndTime.Size = new System.Drawing.Size(65, 12);
+            this.lbEndTime.TabIndex = 10;
+            this.lbEndTime.Text = "结局时间：";
             // 
             // Result
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(891, 500);
+            this.Controls.Add(this.lbEndTime);
+            this.Controls.Add(this.lbPlayTime);
             this.Controls.Add(this.lbFee);
             this.Controls.Add(this.lbErrorMsg);
             this.Controls.Add(this.lbDealerBalance);
@@ -160,5 +182,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn PlayerID;
         private System.Windows.Forms.DataGridViewTextBoxColumn PlayerName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Profit;
+        private System.Windows.Forms.Label lbPlayTime;
+        private System.Windows.Forms.Label lbEndTime;
     }
 }

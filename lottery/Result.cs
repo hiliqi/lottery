@@ -17,7 +17,7 @@ namespace lottery
         private int gameId;
         public Result(int gameId)
         {
-            db = new LotteryDbContext();
+            db = DBSession.GetDbContext();
             this.gameId = gameId;
             InitializeComponent();
             InitView();
@@ -47,6 +47,8 @@ namespace lottery
             lbDealerName.Text = lbDealerName.Text + game.Player.Name; //庄家名称
             lbBetMoney.Text = lbBetMoney.Text + game.BetMoney.ToString(); //开庄金额
             lbFee.Text = lbFee.Text + game.Fee; //结算金额
+            lbPlayTime.Text = lbPlayTime.Text + game.PlayTime.ToLongDateString() + " " + game.PlayTime.ToLongTimeString();
+            lbEndTime.Text = lbEndTime.Text + game.EndTime.ToLongDateString() + " " + game.EndTime.ToLongTimeString();
             var list = await db.PlayDetail.Where(p => p.Round.GameID == gameId).ToListAsync(); //查出当前局的所有情况
             var distinctPlayer = list.Select(l => l.PlayerID).Distinct();
             IEnumerable<PlayDetail> finalList = null;

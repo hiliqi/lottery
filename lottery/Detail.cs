@@ -16,7 +16,7 @@ namespace lottery
         private LotteryDbContext db;
         public Detail(int playerId, int gameId)
         {
-            db =  new LotteryDbContext();
+            db = DBSession.GetDbContext();
             InitializeComponent();
             Init(playerId,gameId);
         }

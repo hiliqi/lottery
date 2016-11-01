@@ -94,6 +94,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DB\DBSession.cs" />
     <Compile Include="Detail.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,6 +119,18 @@
     <Compile Include="Migrations\201610300915586_AlterRound.cs" />
     <Compile Include="Migrations\201610300915586_AlterRound.Designer.cs">
       <DependentUpon>201610300915586_AlterRound.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610310851542_AlterGame1.cs" />
+    <Compile Include="Migrations\201610310851542_AlterGame1.Designer.cs">
+      <DependentUpon>201610310851542_AlterGame1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610310902225_AlterGame2.cs" />
+    <Compile Include="Migrations\201610310902225_AlterGame2.Designer.cs">
+      <DependentUpon>201610310902225_AlterGame2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611010352350_AlterRoundGamePlayDetail.cs" />
+    <Compile Include="Migrations\201611010352350_AlterRoundGamePlayDetail.Designer.cs">
+      <DependentUpon>201611010352350_AlterRoundGamePlayDetail.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Game.cs" />
@@ -165,6 +178,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610300915586_AlterRound.resx">
       <DependentUpon>201610300915586_AlterRound.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610310851542_AlterGame1.resx">
+      <DependentUpon>201610310851542_AlterGame1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610310902225_AlterGame2.resx">
+      <DependentUpon>201610310902225_AlterGame2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611010352350_AlterRoundGamePlayDetail.resx">
+      <DependentUpon>201611010352350_AlterRoundGamePlayDetail.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Play.resx">
       <DependentUpon>Play.cs</DependentUpon>

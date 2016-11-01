@@ -17,7 +17,7 @@ namespace lottery
         LotteryDbContext db;
         public UserManage()
         {
-            db = new LotteryDbContext();
+            db = DBSession.GetDbContext();
             InitializeComponent();
             TextBox.CheckForIllegalCrossThreadCalls = false;
             ListBox.CheckForIllegalCrossThreadCalls = false;
