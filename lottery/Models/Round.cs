@@ -10,15 +10,9 @@ namespace lottery
     {
         public int RoundID { get; set; }
         public int RoundOrder { get; set; } //盘数
-        public double DealerBalance { get; set; } //庄家结余
-        public double TotalMoney { get; set; } //总账面
-        public double DealerProfit { get; set; } //庄家盈亏
-        public string OriginNumber { get; set; } //红包点数
-        public int DealerPoint { get; set; }//庄家点数
-        public double TotalBetMoney { get; set; } //总投注额
-        public bool IsAddMoney { get; set; } //是否追加
         public DateTime PlayTime { get; set; }
         public int GameID { get; set; }
         public virtual Game Game { get; set; }
+        public virtual ICollection<PlayDetail> PlayDetails { get; set; }
     }
 }

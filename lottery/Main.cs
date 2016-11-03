@@ -14,12 +14,21 @@ namespace lottery
 {
     public partial class Main : Form
     {
-        LotteryDbContext db;
+        private readonly LotteryDbContext db;
+        private PlayDetail dealer;
+        private double money = 0;
+        private double balance = 0;
+        private int cmbDealerID = -1;
 
         public Main()
         {
             db = DBSession.GetDbContext();
+            ComboBox.CheckForIllegalCrossThreadCalls = false;
             InitializeComponent();
+            new Thread(() =>
+            {
+                InitCmb();
+            }).Start();
         }
 
         private void InitializeComponent()
@@ -30,6 +39,8 @@ namespace lottery
             this.txtMoney = new System.Windows.Forms.TextBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtAddmoney = new System.Windows.Forms.TextBox();
             this.btnReport = new System.Windows.Forms.Button();
             this.lbMsg = new System.Windows.Forms.Label();
             this.btnUserManager = new System.Windows.Forms.Button();
@@ -48,17 +59,18 @@ namespace lottery
             // cmbDealer
             // 
             this.cmbDealer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDealer.Enabled = false;
             this.cmbDealer.FormattingEnabled = true;
             this.cmbDealer.Location = new System.Drawing.Point(159, 87);
             this.cmbDealer.Name = "cmbDealer";
             this.cmbDealer.Size = new System.Drawing.Size(197, 20);
             this.cmbDealer.TabIndex = 1;
-            this.cmbDealer.Click += new System.EventHandler(this.cmbDealer_Click);
+            this.cmbDealer.SelectedIndexChanged += new System.EventHandler(this.cmbDealer_SelectedIndexChanged);
             // 
             // lbMoney
             // 
             this.lbMoney.AutoSize = true;
-            this.lbMoney.Location = new System.Drawing.Point(87, 135);
+            this.lbMoney.Location = new System.Drawing.Point(58, 119);
             this.lbMoney.Name = "lbMoney";
             this.lbMoney.Size = new System.Drawing.Size(53, 12);
             this.lbMoney.TabIndex = 2;
@@ -66,14 +78,15 @@ namespace lottery
             // 
             // txtMoney
             // 
-            this.txtMoney.Location = new System.Drawing.Point(159, 132);
+            this.txtMoney.Location = new System.Drawing.Point(130, 116);
             this.txtMoney.Name = "txtMoney";
+            this.txtMoney.ReadOnly = true;
             this.txtMoney.Size = new System.Drawing.Size(197, 21);
             this.txtMoney.TabIndex = 3;
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(252, 159);
+            this.btnOK.Location = new System.Drawing.Point(252, 207);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 4;
@@ -83,6 +96,10 @@ namespace lottery
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.lbMoney);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.txtMoney);
+            this.groupBox1.Controls.Add(this.txtAddmoney);
             this.groupBox1.Controls.Add(this.btnReport);
             this.groupBox1.Controls.Add(this.btnOK);
             this.groupBox1.Controls.Add(this.lbMsg);
@@ -94,9 +111,25 @@ namespace lottery
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "开庄";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(58, 160);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(53, 12);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "追加金额";
+            // 
+            // txtAddmoney
+            // 
+            this.txtAddmoney.Location = new System.Drawing.Point(130, 158);
+            this.txtAddmoney.Name = "txtAddmoney";
+            this.txtAddmoney.Size = new System.Drawing.Size(197, 21);
+            this.txtAddmoney.TabIndex = 6;
+            // 
             // btnReport
             // 
-            this.btnReport.Location = new System.Drawing.Point(156, 159);
+            this.btnReport.Location = new System.Drawing.Point(156, 207);
             this.btnReport.Name = "btnReport";
             this.btnReport.Size = new System.Drawing.Size(75, 23);
             this.btnReport.TabIndex = 5;
@@ -109,12 +142,13 @@ namespace lottery
             this.lbMsg.AutoSize = true;
             this.lbMsg.Location = new System.Drawing.Point(35, 44);
             this.lbMsg.Name = "lbMsg";
-            this.lbMsg.Size = new System.Drawing.Size(0, 12);
+            this.lbMsg.Size = new System.Drawing.Size(53, 12);
             this.lbMsg.TabIndex = 1;
+            this.lbMsg.Text = "正在加载";
             // 
             // btnUserManager
             // 
-            this.btnUserManager.Location = new System.Drawing.Point(60, 159);
+            this.btnUserManager.Location = new System.Drawing.Point(60, 207);
             this.btnUserManager.Name = "btnUserManager";
             this.btnUserManager.Size = new System.Drawing.Size(75, 23);
             this.btnUserManager.TabIndex = 0;
@@ -127,10 +161,8 @@ namespace lottery
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(441, 301);
-            this.Controls.Add(this.txtMoney);
-            this.Controls.Add(this.lbMoney);
-            this.Controls.Add(this.cmbDealer);
             this.Controls.Add(this.lbName);
+            this.Controls.Add(this.cmbDealer);
             this.Controls.Add(this.groupBox1);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -142,28 +174,32 @@ namespace lottery
 
         }
 
+        private void InitCmb()
+        {
+            lbMsg.Text = "正在加载庄家名单";
+            cmbDealer.DataSource = db.Player.Where(d => d.IsDel == false).ToList();
+            cmbDealer.DisplayMember = "Name";
+            cmbDealer.ValueMember = "PlayerID";
+            cmbDealer.Enabled = true;
+            lbMsg.Text = "加载庄家名单完毕";
+        }
+
         private void btnOK_Click(object sender, EventArgs e)
         {
-            int money = 0;
-            int gameOrder = 1; //保存局数
-            bool b = int.TryParse(txtMoney.Text, out money);
-            if (!b)
-            {
-                MessageBox.Show("请输入正确的金额");
-                return;
-            }          
-            if (cmbDealer.SelectedValue == null)
+            if (cmbDealerID==-1)
             {
                 MessageBox.Show("请选择庄家");
                 return;
             }
-            int cmbDealerID = -1;
-            bool c = int.TryParse(cmbDealer.SelectedValue.ToString(), out cmbDealerID);
-            if (!c)
+            int gameOrder = 1; //保存局数
+            if (!string.IsNullOrEmpty(txtAddmoney.Text))
             {
-                MessageBox.Show("选择庄家出错");
-                return;
-            }
+                if (!double.TryParse(txtAddmoney.Text, out money))
+                {
+                    MessageBox.Show("请输入正确的金额");
+                    return;
+                }
+            }           
             var game = db.Game.OrderByDescending(g => g.GameID).FirstOrDefault();
             if (game != null)
             {
@@ -172,15 +208,16 @@ namespace lottery
             Game model = new Game()
             {
                 GameOrder = gameOrder,
-                BetMoney = money,
+                BetMoney = money + dealer.Balance, //玩家结余加上追加金额
                 PlayerID = cmbDealerID,
                 PlayTime = DateTime.Now,
                 Year = DateTime.Now.Year,
                 Month = DateTime.Now.Month,
                 Day = DateTime.Now.Day,
-                Fee=money*0.02
+                Fee = money * 0.02
             };
             db.Game.Add(model);
+            dealer.Balance += dealer.Balance;
             db.SaveChanges();
             Play play = new Play(cmbDealer.Text, money*0.98, model.GameID,cmbDealerID);
             play.ShowDialog();
@@ -192,23 +229,29 @@ namespace lottery
             new UserManage().ShowDialog();
         }
 
-        private void cmbDealer_Click(object sender, EventArgs e)
-        {
-            InitCmb();
-        }
-
-        private void InitCmb()
-        {
-            lbMsg.Text = "正在加载庄家名单";
-            cmbDealer.DataSource = db.Player.Where(d => d.IsDel == false).ToList();
-            cmbDealer.DisplayMember = "Name";
-            cmbDealer.ValueMember = "PlayerID";
-            lbMsg.Text = string.Empty;
-        }
-
         private void btnReport_Click(object sender, EventArgs e)
         {
             new Report().ShowDialog();
+        }
+
+        private void LoadBalance()
+        {
+            cmbDealerID = int.Parse(cmbDealer.SelectedValue.ToString());
+            dealer = db.PlayDetail.Where(p => p.PlayerID == cmbDealerID).OrderByDescending(p => p.PlayDetailID).FirstOrDefault();
+            if (dealer != null)
+            {
+                balance = dealer.Balance;
+            }
+            else
+            {
+                balance = 0;
+            }
+            txtMoney.Text = balance.ToString(); //查出玩家最后结余
+        }
+
+        private void cmbDealer_SelectedIndexChanged(object sender, EventArgs e)
+        {            
+            LoadBalance();
         }
     }
 }

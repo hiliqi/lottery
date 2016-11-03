@@ -30,7 +30,9 @@ namespace lottery
                 int index = detailView.Rows.Add();
                 detailView.Rows[index].Cells["BetMoney"].Value = item.BetMoney;
                 detailView.Rows[index].Cells["Multiple"].Value = item.Multiple;
-                detailView.Rows[index].Cells["DealerPoint"].Value = item.Round.DealerPoint;
+                int roundId = item.RoundID;
+                var dealerDetail = db.PlayDetail.SingleOrDefault(p => p.RoundID == roundId && p.PlayerType == PlayerType.Dealer);
+                detailView.Rows[index].Cells["DealerPoint"].Value = dealerDetail.Multiple;
                 detailView.Rows[index].Cells["Profit"].Value = item.Profit;
                 detailView.Rows[index].Cells["Balance"].Value = item.Balance;
                 detailView.Rows[index].Cells["RoundOrder"].Value = item.Round.RoundOrder;

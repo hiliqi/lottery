@@ -29,21 +29,23 @@ namespace lottery
         }
 
         private async void InitView()
-        {
+        {            
             var game = await db.Game.SingleOrDefaultAsync(g => g.GameID == gameId);
             if (game == null)
             {
-                lbErrorMsg.Text = "出错了！请重新开局";
+                MessageBox.Show("出错了！请重新开局");
                 return;
             }
             var rounds = db.Round.Where(r => r.GameID == gameId); //本局所有轮
             var lastRound = await rounds.OrderByDescending(r => r.RoundID).FirstOrDefaultAsync(); //查出最后一轮
             if (lastRound == null)
             {
-                lbErrorMsg.Text = "出错了！本局还没玩过一轮";
+                MessageBox.Show("出错了！本局还没玩过一轮");
                 return;
             }
-            lbDealerBalance.Text = lbDealerBalance.Text + lastRound.DealerBalance.ToString(); //庄家结余
+            var roundId = lastRound.RoundID;
+            var dealerDetail = db.PlayDetail.SingleOrDefault(p => p.RoundID == roundId && p.PlayerType == PlayerType.Dealer);
+            lbDealerBalance.Text = lbDealerBalance.Text + dealerDetail.Balance.ToString(); //庄家结余
             lbDealerName.Text = lbDealerName.Text + game.Player.Name; //庄家名称
             lbBetMoney.Text = lbBetMoney.Text + game.BetMoney.ToString(); //开庄金额
             lbFee.Text = lbFee.Text + game.Fee; //结算金额
@@ -58,9 +60,10 @@ namespace lottery
                 int index = resultView.Rows.Add();
                 resultView.Rows[index].Cells["PlayerID"].Value = id;
                 resultView.Rows[index].Cells["PlayerName"].Value = finalList.First().Player.Name;
-                resultView.Rows[index].Cells["Profit"].Value = finalList.OrderByDescending(f => f.PlayDetailID).First().Balance;
-                //resultView.Rows[index].Cells["PlayRounds"].Value = finalList.Select(l => l.RoundID).Count();
+                var balance= finalList.OrderByDescending(f => f.PlayDetailID).First().Balance;
+                resultView.Rows[index].Cells["Balance"].Value = balance;              
             }
+            db.SaveChanges();
         }
 
         private void resultView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)

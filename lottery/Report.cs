@@ -19,31 +19,51 @@ namespace lottery
         {
             db = DBSession.GetDbContext();
             InitializeComponent();
-            DataGridView.CheckForIllegalCrossThreadCalls = false;
-            new Thread(() => LoadView(DateTime.Now)).Start();
         }
 
         private void LoadView(DateTime time)
         {
-            lbMsg.Text = "正在加载报表";
             resultView.Rows.Clear();
-            var list = db.Game.Include(g => g.Player).Where(
-                    g => g.Year == time.Year &&
-                        g.Month == time.Month &&
-                        g.Day == time.Day
-                ).ToList();
-            foreach (var item in list)
+            int playerID = 0;
+            if(!int.TryParse(cmbPlayer.SelectedValue.ToString(), out playerID))
+            {
+                MessageBox.Show("请选择玩家");
+                return;
+            }
+            if (playerID==-1)
+            {
+                MessageBox.Show("请选择玩家");
+                return;
+            }
+            var gamelist = db.Game.Where(
+                g => g.Year == time.Year &&
+                    g.Month == time.Month &&
+                    g.Day == time.Day 
+                );
+            //gamelist = from g in gamelist
+            //           where g.Rounds.Any(r=>r.any
+            //           ))
+                            
+            var player = db.Player.SingleOrDefault(p => p.PlayerID == playerID);
+            var last = db.PlayDetail.Include(p => p.Round.Game).Where(
+                p => p.PlayerID == player.PlayerID &&
+                    p.Round.Game.Year == time.Year &&
+                    p.Round.Game.Month == time.Month &&
+                    p.Round.Game.Day == time.Day
+                ).OrderByDescending(p => p.RoundID).FirstOrDefault();
+
+            foreach (var item in gamelist)
             {
                 int index= resultView.Rows.Add();
                 resultView.Rows[index].Cells["GameID"].Value = item.GameID;
                 resultView.Rows[index].Cells["GameOrder"].Value = item.GameOrder;
                 resultView.Rows[index].Cells["Dealer"].Value = item.Player.Name;
                 resultView.Rows[index].Cells["BetMoney"].Value = item.BetMoney;
-                resultView.Rows[index].Cells["Balance"].Value = item.Balance;
+                resultView.Rows[index].Cells["DealerBalance"].Value = item.Balance;
                 resultView.Rows[index].Cells["Fee"].Value = item.Fee;
                 resultView.Rows[index].Cells["PlayTime"].Value = item.PlayTime;
+                resultView.Rows[index].Cells["EndTime"].Value = item.EndTime;
             }
-            lbMsg.Text = "报表加载完成";
         }
 
         private void btnReloadView_Click(object sender, EventArgs e)

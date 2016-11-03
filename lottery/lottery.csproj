@@ -132,9 +132,22 @@
     <Compile Include="Migrations\201611010352350_AlterRoundGamePlayDetail.Designer.cs">
       <DependentUpon>201611010352350_AlterRoundGamePlayDetail.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611020644249_AlterDetail.cs" />
+    <Compile Include="Migrations\201611020644249_AlterDetail.Designer.cs">
+      <DependentUpon>201611020644249_AlterDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611020710298_AddFinanceInfo.cs" />
+    <Compile Include="Migrations\201611020710298_AddFinanceInfo.Designer.cs">
+      <DependentUpon>201611020710298_AddFinanceInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611021513558_BigChange.cs" />
+    <Compile Include="Migrations\201611021513558_BigChange.Designer.cs">
+      <DependentUpon>201611021513558_BigChange.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Game.cs" />
     <Compile Include="DB\LotteryDbContext.cs" />
+    <Compile Include="Models\SettleInfo.cs" />
     <Compile Include="Play.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,11 +165,18 @@
     <Compile Include="Report.Designer.cs">
       <DependentUpon>Report.cs</DependentUpon>
     </Compile>
+    <Compile Include="ReportModel.cs" />
     <Compile Include="Result.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Result.Designer.cs">
       <DependentUpon>Result.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Settle.Designer.cs">
+      <DependentUpon>Settle.cs</DependentUpon>
     </Compile>
     <Compile Include="UserManage.cs">
       <SubType>Form</SubType>
@@ -188,6 +208,15 @@
     <EmbeddedResource Include="Migrations\201611010352350_AlterRoundGamePlayDetail.resx">
       <DependentUpon>201611010352350_AlterRoundGamePlayDetail.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611020644249_AlterDetail.resx">
+      <DependentUpon>201611020644249_AlterDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611020710298_AddFinanceInfo.resx">
+      <DependentUpon>201611020710298_AddFinanceInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611021513558_BigChange.resx">
+      <DependentUpon>201611021513558_BigChange.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Play.resx">
       <DependentUpon>Play.cs</DependentUpon>
     </EmbeddedResource>
@@ -206,6 +235,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Result.resx">
       <DependentUpon>Result.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settle.resx">
+      <DependentUpon>Settle.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserManage.resx">
       <DependentUpon>UserManage.cs</DependentUpon>

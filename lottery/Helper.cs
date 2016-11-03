@@ -34,6 +34,10 @@ namespace lottery
             {
                 return -1;
             }
+            if (first==0&&second==0&&third==1)
+            {
+                return 0;
+            }
             if ((first == 0 || first == 1) && second == 1 && third == 0)
             {
                 return 11;

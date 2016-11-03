@@ -25,8 +25,7 @@ namespace lottery
         private int currentRoundOrder; //当前轮数
         private int lastRoundId;
         private int lastRoundOrder;//上一轮数
-        double dealerBalance;//庄家结余
-        private bool isAddMoney;
+        private double dealerBalance;//庄家结余
         private LotteryDbContext db;
         private bool isNewRound;
         private List<string> tempPlayerName = new List<string>(); //保存从数据库里查出来的闲家名字，用来检查新添加的闲家重名
@@ -37,7 +36,6 @@ namespace lottery
             this.dealerID = dealerID;
             this.betMoney = betMoney;
             this.gameID = gameID;
-            isAddMoney = false;
             isNewRound = false;
             db = DBSession.GetDbContext();
             InitializeComponent();
@@ -137,7 +135,6 @@ namespace lottery
             Round round = new Round() { GameID = gameID, RoundOrder = currentRoundOrder,PlayTime=DateTime.Now };
             var model = db.Round.Add(round);
             db.SaveChanges();
-            //betMoney = dealerBalance; //新一轮开始时，本轮庄家投注等于上一轮的庄家结余
             currentRoundId = model.RoundID;
             isNewRound = true; //表示新的一轮
             lbTime.Text = DateTime.Now.ToLongDateString () + " " + DateTime.Now.ToLongTimeString();
@@ -163,6 +160,7 @@ namespace lottery
             PlayDetail lastDetail = null;
             int finalMultiple = 0; //最终盈亏倍数
             int playerBetMoney = 0; //闲家投注
+            double dealerProfit = 0; //庄家本轮盈亏
             foreach (DataGridViewRow row in lotteryView.Rows)
             {
                 if (row.Cells["Money"].Value == null)
@@ -192,7 +190,7 @@ namespace lottery
                         return;
                     }
                 }
-                int profit = 0;
+                double profit = 0;
                 double lastBalance = 0; //上把闲家结余
                 double balance = 0; //本把闲家结余
                 int playerId = -1;
@@ -216,30 +214,35 @@ namespace lottery
                         MessageBox.Show("闲家名字重复");
                         continue;
                     }
-                    var player = new Player() { Name = name.ToString(), IsDel = false };
+                    var player = new Player() { Name = name.ToString(), IsDel = false};
                     db.Player.Add(player); //将新增的闲家保存进数据库
                     db.SaveChanges();
                     playerId = player.PlayerID;
                 }
-
                 if (lastRoundOrder != 0) //如果存在上一把
                 {
                     lastDetail = await db.PlayDetail.SingleOrDefaultAsync(p => p.RoundID == lastRoundId && p.PlayerID == playerId);
                     lastBalance = lastDetail == null ? 0 : lastDetail.Balance; //则赋值上把结余,如果该玩家没有上把，则为0
                 }
-                if (multiple > dealerPoint) //闲家点数大，则闲家赢，按闲家倍数赔
+
+                if (multiple == 0 || dealerPoint == 0) //玩家0.01的情况
+                {
+                    finalMultiple = multiple;
+                    balance = lastBalance;
+                }
+                else if(multiple > dealerPoint) //闲家点数大，则闲家赢，按闲家倍数赔
                 {
                     finalMultiple = multiple;
                     profit = Math.Abs(playerBetMoney) * multiple; //计算出盈亏
                     balance = profit + lastBalance; //计算出本次闲家结余
-                    //dealerProfit -= profit; //计算本把庄家盈亏
+                    dealerProfit += -profit; //计算本把庄家盈亏
                 }
                 else if (multiple < dealerPoint) //闲家点数小，则庄家赢，按庄家点数赔
                 {
                     finalMultiple = -dealerPoint; //倍数变为庄家点数的负数
                     profit = Math.Abs(playerBetMoney) * finalMultiple;
                     balance = profit + lastBalance; //计算出本次闲家结余
-                   // dealerProfit += -profit; //计算本把庄家盈亏
+                    dealerProfit += -profit; //计算本把庄家盈亏
                 }
                 else //如果打平
                 {
@@ -248,7 +251,8 @@ namespace lottery
                 }
                 detail = new PlayDetail();
                 detail.PlayerID = playerId;
-                detail.RoundID = currentRoundId; //赋值本轮id
+                detail.RoundID = currentRoundId; //保存本轮id
+                detail.GameID = gameID; //保存本局id
                 lbRoundCount.Text = $"当前第{currentRoundOrder}轮";
                 detail.BetMoney = playerBetMoney;
                 detail.Balance = balance;
@@ -256,11 +260,25 @@ namespace lottery
                 detail.Multiple = multiple;
                 detail.FinalMultiple = finalMultiple;
                 detail.Profit = profit;
+                detail.PlayerType = PlayerType.Player;
                 db.PlayDetail.Add(detail);
-                await db.SaveChangesAsync();
             }
-            
-            UpdateRoundStatus(); //更新本轮状态
+            dealerBalance += dealerProfit; //最后计算出庄家总盈亏
+            var dealerDetail = new PlayDetail();//记录庄家信息
+            dealerDetail.PlayerID = dealerID;
+            dealerDetail.RoundID = currentRoundId;
+            dealerDetail.GameID = gameID;
+            dealerDetail.BetMoney = betMoney;
+            dealerDetail.Balance = dealerBalance;
+            dealerDetail.OriginNumber = txtDealerPoint.Text;
+            dealerDetail.Multiple = dealerPoint;
+            dealerDetail.FinalMultiple = dealerPoint;
+            dealerDetail.Profit = dealerProfit;
+            dealerDetail.PlayerType = PlayerType.Dealer;
+            db.PlayDetail.Add(dealerDetail);
+            await db.SaveChangesAsync();
+            txtDealerProfit.Text = dealerProfit.ToString();
+            txtDealerBalance.Text = dealerBalance.ToString();
             UpdateGameStatus(); //更新本局状态
             ReLoadTable();
             isNewRound = false; //表示该轮已经结束  
@@ -282,39 +300,6 @@ namespace lottery
             await db.SaveChangesAsync();
         }
 
-        //计算时更新当前轮状态
-        private async void UpdateRoundStatus()
-        {
-            var round = db.Round.SingleOrDefault(r => r.RoundID == currentRoundId);
-            if (round == null)
-            {
-                MessageBox.Show("获取当前轮出现错误，请联系软件作者");
-            }
-            double lastRoundBalance = 0;
-            var lastRound = db.Round.SingleOrDefault(r => r.RoundID == lastRoundId);
-            if (lastRound==null) //说明没有上一把
-            {
-                lastRoundBalance = betMoney;
-            }
-            else
-            {
-                lastRoundBalance = lastRound.DealerBalance;
-            }           
-            var list = db.PlayDetail.Where(p => p.RoundID == currentRoundId); //找出本轮所有detail
-            double dealerProfit = -list.Sum(l => l.Profit);
-            dealerBalance = lastRoundBalance + dealerProfit;
-            round.DealerProfit = dealerProfit;//庄家盈亏
-            round.DealerBalance = dealerBalance; //庄家结余
-            round.DealerPoint = dealerPoint; //庄家点数
-            round.OriginNumber = txtDealerPoint.Text;
-            round.IsAddMoney = isAddMoney;
-            db.Entry(round).State = EntityState.Modified;
-            await db.SaveChangesAsync();
-            txtDealerBalance.Text = dealerBalance.ToString();
-            txtDealerProfit.Text = dealerProfit.ToString();
-        }
-
-        //增加投注
         private void btnAddPlayer_Click(object sender, EventArgs e)
         {
             lotteryView.Rows.Add();
@@ -395,17 +380,35 @@ namespace lottery
                     return;
                 }
                 var model = db.PlayDetail.SingleOrDefault(p => p.PlayDetailID == playerDetailId);
-                if (multiple > dealerPoint) //闲家点数大，则闲家赢，按闲家倍数赔
+                int roundId = model.RoundID;
+                //找出本轮庄家信息
+                var dealerModel = db.PlayDetail.SingleOrDefault(p => p.RoundID == roundId && p.PlayerType == PlayerType.Dealer);
+                //还原庄家数据
+                dealerModel.Profit = dealerModel.Profit - (-model.Profit);
+                dealerBalance= dealerModel.Balance - (-model.Profit);
+                dealerModel.Balance = dealerBalance;
+                if (multiple == 0 || dealerPoint == 0) //玩家拿到0.01
                 {
                     finalMultiple = multiple;
-                    profit = betMoney * multiple; //计算出盈亏
+                    balance = lastBalance;
+                }
+                else if(multiple > dealerPoint) //闲家点数大，则闲家赢，按闲家倍数赔
+                {
+                    finalMultiple = multiple;
+                    profit = Math.Abs(betMoney) * multiple; //计算出盈亏
                     balance = profit + lastBalance; //计算出本次闲家结余
+                    dealerModel.Profit += -profit;
+                    dealerBalance += -profit;
+                    dealerModel.Balance = dealerBalance;
                 }
                 else if (multiple < dealerPoint) //闲家点数小，则庄家赢，按庄家点数赔
                 {
                     finalMultiple = -dealerPoint; //倍数变为庄家点数的负数
-                    profit = betMoney * finalMultiple;
+                    profit = Math.Abs(betMoney) * finalMultiple;
                     balance = profit + lastBalance; //计算出本次闲家结余
+                    dealerModel.Profit += -profit;
+                    dealerBalance += -profit;
+                    dealerModel.Balance = dealerBalance;
                 }
                 else //如果打平
                 {
@@ -419,9 +422,11 @@ namespace lottery
                 model.Balance = balance;
                 model.Profit = profit;
                 db.Entry(model).State = EntityState.Modified;
+                db.Entry(dealerModel).State = EntityState.Modified;
                 db.SaveChanges();
+                txtDealerProfit.Text = dealerModel.Profit.ToString();
+                txtDealerBalance.Text = dealerModel.Balance.ToString();
                 ReLoadTable();
-                UpdateRoundStatus();
                 UpdateGameStatus();
             }
         }
@@ -442,10 +447,9 @@ namespace lottery
             }
             betMoney += temp; //追加开庄金额
             dealerBalance += temp; //追加庄家结余            
-            isAddMoney = true; //表明本轮追庄
-            UpdateRoundStatus();
             UpdateGameStatus();
             txtBetMoney.Text = betMoney.ToString();
+            txtDealerBalance.Text = dealerBalance.ToString();
             txtAddDeal.Clear();
         }
     }

@@ -15,6 +15,9 @@ namespace lottery
     public partial class UserManage : Form
     {
         LotteryDbContext db;
+        private double money;
+        private int playerId;
+        private string name;
         public UserManage()
         {
             db = DBSession.GetDbContext();
@@ -31,9 +34,21 @@ namespace lottery
         private void UserListInit()
         {
             lbMsg.Text = "正在加载玩家名单";
-            lbPlayer.DataSource = db.Player.Where(d => d.IsDel == false).ToList();
-            lbPlayer.DisplayMember = "Name";
-            lbPlayer.ValueMember = "PlayerID";
+            var list = db.Player.Where(d => d.IsDel == false).ToList();
+            foreach (var player in list)
+            {
+                int index = userView.Rows.Add();
+                playerId = player.PlayerID;
+                userView.Rows[index].Cells["PlayerID"].Value = playerId;
+                name = player.Name;
+                userView.Rows[index].Cells["PlayerName"].Value = name;
+                var playerDetail = db.PlayDetail.Where(p => p.PlayerID == player.PlayerID).OrderByDescending(p => p.PlayDetailID).FirstOrDefault();
+                if (playerDetail != null)
+                {
+                    money = playerDetail.Balance;
+                    userView.Rows[index].Cells["Money"].Value = money;
+                }               
+            }
             lbMsg.Text = string.Empty;
         }
 
@@ -58,35 +73,43 @@ namespace lottery
             t.Start();
         }
 
-
-        private void btnDelPlayer_Click(object sender, EventArgs e)
+        private void userView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            Thread t = new Thread(() =>
-              {
-                  if (lbPlayer.SelectedValue==null)
-                  {
-                      MessageBox.Show("没有用户了");
-                      return;
-                  }
-                  int id = 0;
-                  bool b = int.TryParse(lbPlayer.SelectedValue.ToString(), out id);
-                  if (!b)
-                  {
-                      MessageBox.Show("删除用户出错");
-                      return;
-                  }
-                  var model = db.Player.SingleOrDefault(d => d.PlayerID == id);
-                  model.IsDel = true;
-                  db.Entry(model).State = EntityState.Modified;
-                  db.SaveChanges();
-                  UserListInit();
-              });
-            t.Start();
-        }
-
-        private void btnPlay_Click(object sender, EventArgs e)
-        {
-            Close();
+            var senderGrid = (DataGridView)sender;
+            int playerId = -1;
+            if (!int.TryParse(senderGrid.Rows[e.RowIndex].Cells["PlayerID"].Value.ToString(), out playerId))
+            {
+                MessageBox.Show("选择正确的玩家");
+            }
+            if (senderGrid.Columns[e.ColumnIndex].Name== "Settle" && e.RowIndex >= 0)
+            {              
+                new Settle(playerId).ShowDialog();
+            }
+            else if(senderGrid.Columns[e.ColumnIndex].Name == "GoBet" && e.RowIndex >= 0)
+            {
+                int gameOrder = 1; //保存局数
+                var game = db.Game.OrderByDescending(g => g.GameID).FirstOrDefault();
+                if (game != null)
+                {
+                    gameOrder = game.GameOrder + 1; //查出最近一局的局数
+                }
+                Game model = new Game()
+                {
+                    GameOrder = gameOrder,
+                    BetMoney = money, //玩家结余加上追加金额
+                    PlayerID = playerId,
+                    PlayTime = DateTime.Now,
+                    Year = DateTime.Now.Year,
+                    Month = DateTime.Now.Month,
+                    Day = DateTime.Now.Day,
+                    Fee = money * 0.02
+                };
+                db.Game.Add(model);
+                db.SaveChanges();
+                Play play = new Play(name, money * 0.98, model.GameID, playerId);
+                play.Show();
+                Close();
+            }
         }
     }
 }

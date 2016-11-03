@@ -24,5 +24,6 @@ namespace lottery
         public DateTime EndTime { get; set; } //下庄时间
         public int PlayerID { get; set; }
         public virtual Player Player { get; set; }
+        public virtual ICollection<Round> Rounds { get; set; }
     }
 }
