@@ -28,63 +28,36 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.txtPlayer = new System.Windows.Forms.TextBox();
             this.btnAddPlayer = new System.Windows.Forms.Button();
-            this.txtName = new System.Windows.Forms.TextBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.userView = new System.Windows.Forms.DataGridView();
-            this.lbMsg = new System.Windows.Forms.Label();
             this.PlayerID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PlayerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Money = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Balance = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Settle = new System.Windows.Forms.DataGridViewButtonColumn();
             this.SettleLog = new System.Windows.Forms.DataGridViewButtonColumn();
             this.Delete = new System.Windows.Forms.DataGridViewButtonColumn();
             this.GoBet = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.btnLoadView = new System.Windows.Forms.Button();
+            this.lbLoad = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.userView)).BeginInit();
             this.SuspendLayout();
             // 
-            // groupBox1
+            // txtPlayer
             // 
-            this.groupBox1.Controls.Add(this.btnAddPlayer);
-            this.groupBox1.Controls.Add(this.txtName);
-            this.groupBox1.Location = new System.Drawing.Point(25, 27);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(272, 576);
-            this.groupBox1.TabIndex = 0;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "用户添加";
+            this.txtPlayer.Location = new System.Drawing.Point(36, 30);
+            this.txtPlayer.Name = "txtPlayer";
+            this.txtPlayer.Size = new System.Drawing.Size(100, 21);
+            this.txtPlayer.TabIndex = 0;
             // 
             // btnAddPlayer
             // 
-            this.btnAddPlayer.Location = new System.Drawing.Point(163, 55);
+            this.btnAddPlayer.Location = new System.Drawing.Point(142, 28);
             this.btnAddPlayer.Name = "btnAddPlayer";
             this.btnAddPlayer.Size = new System.Drawing.Size(75, 23);
-            this.btnAddPlayer.TabIndex = 4;
+            this.btnAddPlayer.TabIndex = 1;
             this.btnAddPlayer.Text = "添加玩家";
             this.btnAddPlayer.UseVisualStyleBackColor = true;
-            this.btnAddPlayer.Click += new System.EventHandler(this.btnAddPlayer_Click);
-            // 
-            // txtName
-            // 
-            this.txtName.Location = new System.Drawing.Point(37, 55);
-            this.txtName.Multiline = true;
-            this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(120, 486);
-            this.txtName.TabIndex = 0;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.userView);
-            this.groupBox2.Controls.Add(this.lbMsg);
-            this.groupBox2.Location = new System.Drawing.Point(320, 27);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(772, 576);
-            this.groupBox2.TabIndex = 1;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "用户删除";
             // 
             // userView
             // 
@@ -92,26 +65,17 @@
             this.userView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.PlayerID,
             this.PlayerName,
-            this.Money,
+            this.Balance,
             this.Settle,
             this.SettleLog,
             this.Delete,
             this.GoBet});
-            this.userView.Location = new System.Drawing.Point(17, 55);
+            this.userView.Location = new System.Drawing.Point(36, 73);
             this.userView.Name = "userView";
             this.userView.RowTemplate.Height = 23;
-            this.userView.Size = new System.Drawing.Size(737, 486);
-            this.userView.TabIndex = 5;
+            this.userView.Size = new System.Drawing.Size(752, 473);
+            this.userView.TabIndex = 2;
             this.userView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.userView_CellContentClick);
-            // 
-            // lbMsg
-            // 
-            this.lbMsg.AutoSize = true;
-            this.lbMsg.Location = new System.Drawing.Point(31, 30);
-            this.lbMsg.Name = "lbMsg";
-            this.lbMsg.Size = new System.Drawing.Size(53, 12);
-            this.lbMsg.TabIndex = 4;
-            this.lbMsg.Text = "正在加载";
             // 
             // PlayerID
             // 
@@ -125,11 +89,11 @@
             this.PlayerName.Name = "PlayerName";
             this.PlayerName.ReadOnly = true;
             // 
-            // Money
+            // Balance
             // 
-            this.Money.HeaderText = "剩余金额";
-            this.Money.Name = "Money";
-            this.Money.ReadOnly = true;
+            this.Balance.HeaderText = "剩余金额";
+            this.Balance.Name = "Balance";
+            this.Balance.ReadOnly = true;
             // 
             // Settle
             // 
@@ -149,10 +113,10 @@
             // 
             // Delete
             // 
-            this.Delete.HeaderText = "删除";
+            this.Delete.HeaderText = "删除玩家";
             this.Delete.Name = "Delete";
             this.Delete.ReadOnly = true;
-            this.Delete.Text = "删除";
+            this.Delete.Text = "删除玩家";
             this.Delete.UseColumnTextForButtonValue = true;
             // 
             // GoBet
@@ -160,39 +124,59 @@
             this.GoBet.HeaderText = "开庄";
             this.GoBet.Name = "GoBet";
             this.GoBet.ReadOnly = true;
+            this.GoBet.Text = "开庄";
+            this.GoBet.UseColumnTextForButtonValue = true;
+            // 
+            // btnLoadView
+            // 
+            this.btnLoadView.Location = new System.Drawing.Point(692, 28);
+            this.btnLoadView.Name = "btnLoadView";
+            this.btnLoadView.Size = new System.Drawing.Size(75, 23);
+            this.btnLoadView.TabIndex = 3;
+            this.btnLoadView.Text = "加载列表";
+            this.btnLoadView.UseVisualStyleBackColor = true;
+            this.btnLoadView.Click += new System.EventHandler(this.btnLoadView_Click);
+            // 
+            // lbLoad
+            // 
+            this.lbLoad.AutoSize = true;
+            this.lbLoad.Location = new System.Drawing.Point(385, 30);
+            this.lbLoad.Name = "lbLoad";
+            this.lbLoad.Size = new System.Drawing.Size(0, 12);
+            this.lbLoad.TabIndex = 4;
             // 
             // UserManage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1112, 623);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(836, 578);
+            this.Controls.Add(this.lbLoad);
+            this.Controls.Add(this.btnLoadView);
+            this.Controls.Add(this.userView);
+            this.Controls.Add(this.btnAddPlayer);
+            this.Controls.Add(this.txtPlayer);
             this.Name = "UserManage";
-            this.Text = "玩家管理";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "用户管理";
             ((System.ComponentModel.ISupportInitialize)(this.userView)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox txtName;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label lbMsg;
+        private System.Windows.Forms.TextBox txtPlayer;
         private System.Windows.Forms.Button btnAddPlayer;
         private System.Windows.Forms.DataGridView userView;
         private System.Windows.Forms.DataGridViewTextBoxColumn PlayerID;
         private System.Windows.Forms.DataGridViewTextBoxColumn PlayerName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Money;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Balance;
         private System.Windows.Forms.DataGridViewButtonColumn Settle;
         private System.Windows.Forms.DataGridViewButtonColumn SettleLog;
         private System.Windows.Forms.DataGridViewButtonColumn Delete;
         private System.Windows.Forms.DataGridViewButtonColumn GoBet;
+        private System.Windows.Forms.Button btnLoadView;
+        private System.Windows.Forms.Label lbLoad;
     }
 }

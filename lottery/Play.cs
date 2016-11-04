@@ -292,10 +292,10 @@ namespace lottery
                 game.Balance = dealerBalance;
             }
             game.EndTime = DateTime.Now;
-            if (game.Balance>0)
-            {
-                game.Fee = game.Fee + game.Balance * 0.03;
-            }
+            //if (game.Balance>0)
+            //{
+            //    game.Fee = game.Fee + game.Balance * 0.03;
+            //}
             db.Entry(game).State = EntityState.Modified;
             await db.SaveChangesAsync();
         }
@@ -445,9 +445,20 @@ namespace lottery
                 MessageBox.Show("请输入正确的追庄金额");
                 return;
             }
-            betMoney += temp; //追加开庄金额
-            dealerBalance += temp; //追加庄家结余            
-            UpdateGameStatus();
+            betMoney += temp * 0.98; //追加开庄金额
+            dealerBalance += temp * 0.98; //追加庄家结余            
+            var game=db.Game.SingleOrDefault(g => g.GameID == gameID);
+            game.BetMoney = betMoney;
+            game.Balance = dealerBalance;
+            game.Fee = game.Fee + temp * 0.02;
+            db.Entry(game).State = EntityState.Modified;
+            var playDetail = db.PlayDetail.Where(p => p.PlayerID == dealerID).OrderByDescending(p => p.PlayDetailID).FirstOrDefault();
+            if (playDetail!=null)
+            {
+                playDetail.Balance = dealerBalance;
+                db.Entry(playDetail).State = EntityState.Modified;
+            }
+            db.SaveChanges();
             txtBetMoney.Text = betMoney.ToString();
             txtDealerBalance.Text = dealerBalance.ToString();
             txtAddDeal.Clear();

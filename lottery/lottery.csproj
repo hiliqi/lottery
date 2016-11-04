@@ -102,12 +102,6 @@
       <DependentUpon>Detail.cs</DependentUpon>
     </Compile>
     <Compile Include="Helper.cs" />
-    <Compile Include="Main.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Main.Designer.cs">
-      <DependentUpon>Main.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\201610280621454_Init.cs" />
     <Compile Include="Migrations\201610280621454_Init.Designer.cs">
       <DependentUpon>201610280621454_Init.cs</DependentUpon>
@@ -186,9 +180,6 @@
     </Compile>
     <EmbeddedResource Include="Detail.resx">
       <DependentUpon>Detail.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Main.resx">
-      <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610280621454_Init.resx">
       <DependentUpon>201610280621454_Init.cs</DependentUpon>
