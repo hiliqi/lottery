@@ -50,10 +50,10 @@ namespace lottery
         }
 
         //刷新表格
-        public async void ReLoadTable()
+        public void ReLoadTable()
         {
             lotteryView.Rows.Clear();
-            var list = await db.Player.Where(p=>p.IsDel==false).ToListAsync();
+            var list = db.Player.Where(p=>p.IsDel==false).ToList();
             foreach (var player in list)
             {
                 if (player.PlayerID==dealerID) //如果是庄家
@@ -61,10 +61,11 @@ namespace lottery
                     continue;
                 }
                 int index = lotteryView.Rows.Add();
-                var playDetail = await db.PlayDetail.SingleOrDefaultAsync(p => p.PlayerID == player.PlayerID && p.Round.RoundOrder == currentRoundOrder && p.Round.GameID == gameID);
+                var temp = db.PlayDetail.Where(p => p.PlayerID == player.PlayerID).OrderByDescending(p=>p.PlayDetailID).ToList();
+                var playDetail = temp.SingleOrDefault(p=>p.Round.RoundOrder == currentRoundOrder && p.Round.GameID == gameID);
                 if (playDetail == null) //如果该闲家本盘未参与,则查出最近一盘数据
                 {
-                    playDetail = await db.PlayDetail.Where(p => p.PlayerID == player.PlayerID && p.Round.GameID==gameID).OrderByDescending(p => p.RoundID).FirstOrDefaultAsync();
+                    playDetail = temp.Where(p => p.Round.GameID==gameID).OrderByDescending(p => p.RoundID).FirstOrDefault();
                     lotteryView.Rows[index].Cells["PlayerID"].Value = player.PlayerID;
                     lotteryView.Rows[index].Cells["Player"].Value = player.Name;
                     if (playDetail == null)//如果没有最近一盘
@@ -85,8 +86,10 @@ namespace lottery
                     lotteryView.Rows[index].Cells["OriginNumber"].Value = playDetail.OriginNumber;
                     lotteryView.Rows[index].Cells["PlayerProfit"].Value = playDetail.Profit;
                     lotteryView.Rows[index].Cells["DealerProfit"].Value = -playDetail.Profit;
-                    //查出该玩家在本局的上轮情况
-                    var lastRound = await db.PlayDetail.FirstOrDefaultAsync(p => p.PlayerID == player.PlayerID && p.Round.RoundOrder == lastRoundOrder && p.Round.GameID == gameID);
+                    //查出该玩家上轮情况
+                    
+                    temp.Remove(temp.FirstOrDefault());
+                    var lastRound = temp.FirstOrDefault();
                     if (lastRound != null)
                     {
                         lotteryView.Rows[index].Cells["LastSurplus"].Value = lastRound.Balance;
@@ -219,11 +222,10 @@ namespace lottery
                     db.SaveChanges();
                     playerId = player.PlayerID;
                 }
-                if (lastRoundOrder != 0) //如果存在上一把
-                {
-                    lastDetail = await db.PlayDetail.SingleOrDefaultAsync(p => p.RoundID == lastRoundId && p.PlayerID == playerId);
+
+                    lastDetail = await db.PlayDetail.Where(p => p.PlayerID == playerId).OrderByDescending(p => p.PlayDetailID).FirstOrDefaultAsync();
                     lastBalance = lastDetail == null ? 0 : lastDetail.Balance; //则赋值上把结余,如果该玩家没有上把，则为0
-                }
+
 
                 if (multiple == 0 || dealerPoint == 0) //玩家0.01的情况
                 {
@@ -292,10 +294,10 @@ namespace lottery
                 game.Balance = dealerBalance;
             }
             game.EndTime = DateTime.Now;
-            //if (game.Balance>0)
-            //{
-            //    game.Fee = game.Fee + game.Balance * 0.03;
-            //}
+            if (game.Balance > 0)
+            {
+                game.Fee = game.Fee + game.Balance * 0.03;
+            }
             db.Entry(game).State = EntityState.Modified;
             await db.SaveChangesAsync();
         }
@@ -429,12 +431,6 @@ namespace lottery
                 ReLoadTable();
                 UpdateGameStatus();
             }
-        }
-
-        private void Edit_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            MessageBox.Show("Test");
-            ReLoadTable();
         }
 
         private void btnAddDealMoney_Click(object sender, EventArgs e)

@@ -36,8 +36,6 @@ namespace lottery
                 MessageBox.Show("出错了！请重新开局");
                 return;
             }
-            game.Fee = game.Fee + game.Balance * 0.03;
-            db.Entry(game).State = EntityState.Modified;
             var rounds = db.Round.Where(r => r.GameID == gameId); //本局所有轮
             var lastRound = await rounds.OrderByDescending(r => r.RoundID).FirstOrDefaultAsync(); //查出最后一轮
             if (lastRound == null)

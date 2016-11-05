@@ -129,7 +129,7 @@
             // 
             // btnLoadView
             // 
-            this.btnLoadView.Location = new System.Drawing.Point(692, 28);
+            this.btnLoadView.Location = new System.Drawing.Point(223, 28);
             this.btnLoadView.Name = "btnLoadView";
             this.btnLoadView.Size = new System.Drawing.Size(75, 23);
             this.btnLoadView.TabIndex = 3;
@@ -149,7 +149,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(836, 578);
+            this.ClientSize = new System.Drawing.Size(823, 578);
             this.Controls.Add(this.lbLoad);
             this.Controls.Add(this.btnLoadView);
             this.Controls.Add(this.userView);

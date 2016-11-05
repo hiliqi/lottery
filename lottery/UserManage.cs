@@ -14,10 +14,7 @@ namespace lottery
 {
     public partial class UserManage : Form
     {
-        LotteryDbContext db;
-        private double money;
-        private int playerId;
-        private string name;
+        LotteryDbContext db;       
         public UserManage()
         {
             db = DBSession.GetDbContext();
@@ -28,6 +25,9 @@ namespace lottery
 
         private void UserListInit()
         {
+            double money;
+            int playerId;
+            string name;
             var list = db.Player.Where(d => d.IsDel == false).ToList();
             foreach (var player in list)
             {
@@ -40,7 +40,7 @@ namespace lottery
                 if (playerDetail != null)
                 {
                     money = playerDetail.Balance;
-                    userView.Rows[index].Cells["Money"].Value = money;
+                    userView.Rows[index].Cells["Balance"].Value = money;
                 }
             }
         }
@@ -70,11 +70,28 @@ namespace lottery
         private void userView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             var senderGrid = (DataGridView)sender;
+            double money=0;
+            string name;
             int playerId = -1;
-            if (!int.TryParse(senderGrid.Rows[e.RowIndex].Cells["PlayerID"].Value.ToString(), out playerId))
+            if (senderGrid.Rows[e.RowIndex].Cells["PlayerID"].Value==null)
             {
                 MessageBox.Show("选择正确的玩家");
+            }else if (!int.TryParse(senderGrid.Rows[e.RowIndex].Cells["PlayerID"].Value.ToString(), out playerId))
+            {
+                MessageBox.Show("选择正确的玩家");
+                return;
             }
+
+            if (senderGrid.Rows[e.RowIndex].Cells["Balance"].Value==null)
+            {
+                money = 0;
+            }
+            else if (!double.TryParse(senderGrid.Rows[e.RowIndex].Cells["Balance"].Value.ToString(), out money))
+            {
+                MessageBox.Show("玩家金额不对");
+                return;
+            }
+            
             name = senderGrid.Rows[e.RowIndex].Cells["PlayerName"].Value.ToString();
             if (senderGrid.Columns[e.ColumnIndex].Name == "Settle" && e.RowIndex >= 0)
             {
@@ -97,11 +114,15 @@ namespace lottery
                     Year = DateTime.Now.Year,
                     Month = DateTime.Now.Month,
                     Day = DateTime.Now.Day,
-                    Fee = money * 0.02
+                    Fee = money > 0 ? money * 0.02 : 0
                 };
                 db.Game.Add(model);
                 db.SaveChanges();
-                Play play = new Play(name, money * 0.98, model.GameID, playerId);
+                if (money>0)
+                {
+                    money = money * 0.98; //玩家余额是正数，则抽成
+                }
+                Play play = new Play(name, money, model.GameID, playerId);
                 play.ShowDialog();
             }
         }
