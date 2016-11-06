@@ -61,5 +61,33 @@ namespace lottery
             }
             return result % 10;
         }
+
+        //闲家和庄家比，如果闲家点数大，则为true
+        public static CompareResult Compare(int multiple,int dealerPoint)
+        {
+            if (multiple == 0 || dealerPoint == 0)
+            {
+                return CompareResult.Even;
+            }
+            if (multiple==dealerPoint)
+            {
+                if (multiple <= 4)
+                {
+                    return CompareResult.DealerWin;
+                }
+                else
+                {
+                    return CompareResult.Even;
+                }
+            }else if (multiple>dealerPoint)
+            {
+                return CompareResult.PlayerWin;
+            }
+            else
+            {
+                return CompareResult.DealerWin;
+            }
+        }
+
     }
 }

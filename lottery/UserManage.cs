@@ -93,11 +93,7 @@ namespace lottery
             }
             
             name = senderGrid.Rows[e.RowIndex].Cells["PlayerName"].Value.ToString();
-            if (senderGrid.Columns[e.ColumnIndex].Name == "Settle" && e.RowIndex >= 0)
-            {
-                new Settle(playerId).ShowDialog();
-            }
-            else if (senderGrid.Columns[e.ColumnIndex].Name == "GoBet" && e.RowIndex >= 0) //开庄
+             if (senderGrid.Columns[e.ColumnIndex].Name == "GoBet" && e.RowIndex >= 0) //开庄
             {
                 int gameOrder = 1; //保存局数
                 var game = db.Game.OrderByDescending(g => g.GameID).FirstOrDefault();

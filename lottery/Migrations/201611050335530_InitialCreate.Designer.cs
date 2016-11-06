@@ -7,13 +7,13 @@ namespace lottery.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class AddFinanceInfo : IMigrationMetadata
+    public sealed partial class InitialCreate : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddFinanceInfo));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialCreate));
         
         string IMigrationMetadata.Id
         {
-            get { return "201611020710298_AddFinanceInfo"; }
+            get { return "201611050335530_InitialCreate"; }
         }
         
         string IMigrationMetadata.Source

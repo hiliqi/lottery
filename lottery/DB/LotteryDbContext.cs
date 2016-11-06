@@ -26,6 +26,5 @@
         public virtual DbSet<Round> Round { get; set; }
         public virtual DbSet<Game> Game { get; set; }
         public virtual DbSet<PlayDetail> PlayDetail { get; set; }
-        public virtual DbSet<SettleInfo> SettleInfo { get; set; }
     }
 }

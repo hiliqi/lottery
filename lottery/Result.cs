@@ -44,7 +44,7 @@ namespace lottery
                 return;
             }
             var roundId = lastRound.RoundID;
-            var dealerDetail = db.PlayDetail.SingleOrDefault(p => p.RoundID == roundId && p.PlayerType == PlayerType.Dealer);
+            var dealerDetail = db.PlayDetail.SingleOrDefault(p => p.RoundID == roundId);
             lbDealerBalance.Text = lbDealerBalance.Text + dealerDetail.Balance.ToString(); //庄家结余
             lbDealerName.Text = lbDealerName.Text + game.Player.Name; //庄家名称
             lbBetMoney.Text = lbBetMoney.Text + game.BetMoney.ToString(); //开庄金额

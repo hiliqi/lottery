@@ -17,7 +17,6 @@ namespace lottery
         public int Multiple { get; set; }//盈亏倍数
         public int FinalMultiple { get; set; } //最终盈亏倍数
         public double Profit { get; set; } //实际盈亏
-        public PlayerType PlayerType { get; set; }
         public int RoundID { get; set; }
         public int GameID { get; set; }
         public virtual Round Round { get; set; }

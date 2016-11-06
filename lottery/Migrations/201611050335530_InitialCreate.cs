@@ -3,7 +3,7 @@ namespace lottery.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Init : DbMigration
+    public partial class InitialCreate : DbMigration
     {
         public override void Up()
         {
@@ -17,6 +17,11 @@ namespace lottery.Migrations
                         Balance = c.Double(nullable: false),
                         FeePercent = c.Double(nullable: false),
                         Fee = c.Double(nullable: false),
+                        PlayTime = c.DateTime(nullable: false, precision: 0),
+                        Year = c.Int(nullable: false),
+                        Month = c.Int(nullable: false),
+                        Day = c.Int(nullable: false),
+                        EndTime = c.DateTime(nullable: false, precision: 0),
                         PlayerID = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.GameID)
@@ -41,10 +46,12 @@ namespace lottery.Migrations
                         PlayerID = c.Int(nullable: false),
                         BetMoney = c.Double(nullable: false),
                         Balance = c.Double(nullable: false),
+                        OriginNumber = c.String(unicode: false),
                         Multiple = c.Int(nullable: false),
                         FinalMultiple = c.Int(nullable: false),
                         Profit = c.Double(nullable: false),
                         RoundID = c.Int(nullable: false),
+                        GameID = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.PlayDetailID)
                 .ForeignKey("dbo.Players", t => t.PlayerID, cascadeDelete: true)
@@ -58,11 +65,10 @@ namespace lottery.Migrations
                     {
                         RoundID = c.Int(nullable: false, identity: true),
                         RoundOrder = c.Int(nullable: false),
+                        PlayTime = c.DateTime(nullable: false, precision: 0),
+                        DealerID = c.Int(nullable: false),
                         DealerBalance = c.Double(nullable: false),
-                        TotalMoney = c.Double(nullable: false),
                         DealerProfit = c.Double(nullable: false),
-                        TotalBetMoney = c.Double(nullable: false),
-                        IsAddMoney = c.Boolean(nullable: false),
                         GameID = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.RoundID)
