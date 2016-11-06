@@ -31,15 +31,13 @@
             this.txtPlayer = new System.Windows.Forms.TextBox();
             this.btnAddPlayer = new System.Windows.Forms.Button();
             this.userView = new System.Windows.Forms.DataGridView();
+            this.btnLoadView = new System.Windows.Forms.Button();
             this.PlayerID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PlayerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Balance = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Settle = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.SettleLog = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.Money = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Delete = new System.Windows.Forms.DataGridViewButtonColumn();
             this.GoBet = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.btnLoadView = new System.Windows.Forms.Button();
-            this.lbLoad = new System.Windows.Forms.Label();
+            this.lbMsg = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.userView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -58,6 +56,7 @@
             this.btnAddPlayer.TabIndex = 1;
             this.btnAddPlayer.Text = "添加玩家";
             this.btnAddPlayer.UseVisualStyleBackColor = true;
+            this.btnAddPlayer.Click += new System.EventHandler(this.btnAddPlayer_Click);
             // 
             // userView
             // 
@@ -65,17 +64,25 @@
             this.userView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.PlayerID,
             this.PlayerName,
-            this.Balance,
-            this.Settle,
-            this.SettleLog,
+            this.Money,
             this.Delete,
             this.GoBet});
             this.userView.Location = new System.Drawing.Point(36, 73);
             this.userView.Name = "userView";
             this.userView.RowTemplate.Height = 23;
-            this.userView.Size = new System.Drawing.Size(752, 473);
+            this.userView.Size = new System.Drawing.Size(547, 473);
             this.userView.TabIndex = 2;
             this.userView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.userView_CellContentClick);
+            // 
+            // btnLoadView
+            // 
+            this.btnLoadView.Location = new System.Drawing.Point(223, 28);
+            this.btnLoadView.Name = "btnLoadView";
+            this.btnLoadView.Size = new System.Drawing.Size(75, 23);
+            this.btnLoadView.TabIndex = 3;
+            this.btnLoadView.Text = "加载玩家";
+            this.btnLoadView.UseVisualStyleBackColor = true;
+            this.btnLoadView.Click += new System.EventHandler(this.btnLoadView_Click);
             // 
             // PlayerID
             // 
@@ -89,27 +96,10 @@
             this.PlayerName.Name = "PlayerName";
             this.PlayerName.ReadOnly = true;
             // 
-            // Balance
+            // Money
             // 
-            this.Balance.HeaderText = "剩余金额";
-            this.Balance.Name = "Balance";
-            this.Balance.ReadOnly = true;
-            // 
-            // Settle
-            // 
-            this.Settle.HeaderText = "清账";
-            this.Settle.Name = "Settle";
-            this.Settle.ReadOnly = true;
-            this.Settle.Text = "清账";
-            this.Settle.UseColumnTextForButtonValue = true;
-            // 
-            // SettleLog
-            // 
-            this.SettleLog.HeaderText = "结算记录";
-            this.SettleLog.Name = "SettleLog";
-            this.SettleLog.ReadOnly = true;
-            this.SettleLog.Text = "结算记录";
-            this.SettleLog.UseColumnTextForButtonValue = true;
+            this.Money.HeaderText = "开庄金额";
+            this.Money.Name = "Money";
             // 
             // Delete
             // 
@@ -127,30 +117,21 @@
             this.GoBet.Text = "开庄";
             this.GoBet.UseColumnTextForButtonValue = true;
             // 
-            // btnLoadView
+            // lbMsg
             // 
-            this.btnLoadView.Location = new System.Drawing.Point(223, 28);
-            this.btnLoadView.Name = "btnLoadView";
-            this.btnLoadView.Size = new System.Drawing.Size(75, 23);
-            this.btnLoadView.TabIndex = 3;
-            this.btnLoadView.Text = "加载列表";
-            this.btnLoadView.UseVisualStyleBackColor = true;
-            this.btnLoadView.Click += new System.EventHandler(this.btnLoadView_Click);
-            // 
-            // lbLoad
-            // 
-            this.lbLoad.AutoSize = true;
-            this.lbLoad.Location = new System.Drawing.Point(385, 30);
-            this.lbLoad.Name = "lbLoad";
-            this.lbLoad.Size = new System.Drawing.Size(0, 12);
-            this.lbLoad.TabIndex = 4;
+            this.lbMsg.AutoSize = true;
+            this.lbMsg.Location = new System.Drawing.Point(319, 33);
+            this.lbMsg.Name = "lbMsg";
+            this.lbMsg.Size = new System.Drawing.Size(41, 12);
+            this.lbMsg.TabIndex = 5;
+            this.lbMsg.Text = "label1";
             // 
             // UserManage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(823, 578);
-            this.Controls.Add(this.lbLoad);
+            this.ClientSize = new System.Drawing.Size(618, 578);
+            this.Controls.Add(this.lbMsg);
             this.Controls.Add(this.btnLoadView);
             this.Controls.Add(this.userView);
             this.Controls.Add(this.btnAddPlayer);
@@ -169,14 +150,12 @@
         private System.Windows.Forms.TextBox txtPlayer;
         private System.Windows.Forms.Button btnAddPlayer;
         private System.Windows.Forms.DataGridView userView;
+        private System.Windows.Forms.Button btnLoadView;
         private System.Windows.Forms.DataGridViewTextBoxColumn PlayerID;
         private System.Windows.Forms.DataGridViewTextBoxColumn PlayerName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Balance;
-        private System.Windows.Forms.DataGridViewButtonColumn Settle;
-        private System.Windows.Forms.DataGridViewButtonColumn SettleLog;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Money;
         private System.Windows.Forms.DataGridViewButtonColumn Delete;
         private System.Windows.Forms.DataGridViewButtonColumn GoBet;
-        private System.Windows.Forms.Button btnLoadView;
-        private System.Windows.Forms.Label lbLoad;
+        private System.Windows.Forms.Label lbMsg;
     }
 }

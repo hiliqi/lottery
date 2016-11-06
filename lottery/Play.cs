@@ -61,23 +61,13 @@ namespace lottery
                     continue;
                 }
                 int index = lotteryView.Rows.Add();
-                var temp = db.PlayDetail.Where(p => p.PlayerID == player.PlayerID).OrderByDescending(p => p.PlayDetailID).ToList();
-                var playDetail = temp.SingleOrDefault(p => p.Round.RoundOrder == currentRoundOrder && p.Round.GameID == gameID);
-                if (playDetail == null) //如果该闲家本盘未参与,则查出最近一盘数据
+                var playDetail = db.PlayDetail.SingleOrDefault(p => p.PlayerID == player.PlayerID && p.RoundID == currentRoundId); //查出本盘数据
+                var lastDetail = db.PlayDetail.SingleOrDefault(p => p.PlayerID == player.PlayerID && p.Round.GameID == gameID && p.Round.RoundOrder == lastRoundOrder);
+                if (playDetail != null) //本盘数据
                 {
-                    playDetail = temp.Where(p => p.Round.GameID == gameID).OrderByDescending(p => p.RoundID).FirstOrDefault();
                     lotteryView.Rows[index].Cells["PlayerID"].Value = player.PlayerID;
                     lotteryView.Rows[index].Cells["Player"].Value = player.Name;
-                    if (playDetail == null)//如果没有最近一盘
-                    {
-                    }
-                    else
-                    {
-                        lotteryView.Rows[index].Cells["LastSurplus"].Value = playDetail.Balance;
-                    }
-                }
-                else
-                {
+                    lotteryView.Rows[index].Cells["LastSurplus"].Value = lastDetail == null ? 0 : lastDetail.Balance;
                     lotteryView.Rows[index].Cells["PlayDetailID"].Value = playDetail.PlayDetailID;
                     lotteryView.Rows[index].Cells["PlayerID"].Value = player.PlayerID;
                     lotteryView.Rows[index].Cells["Player"].Value = player.Name;
@@ -86,19 +76,6 @@ namespace lottery
                     lotteryView.Rows[index].Cells["OriginNumber"].Value = playDetail.OriginNumber;
                     lotteryView.Rows[index].Cells["PlayerProfit"].Value = playDetail.Profit;
                     lotteryView.Rows[index].Cells["DealerProfit"].Value = -playDetail.Profit;
-                    //查出该玩家上轮情况
-
-                    temp.Remove(temp.FirstOrDefault());
-                    var lastRound = temp.FirstOrDefault();
-                    if (lastRound != null)
-                    {
-                        lotteryView.Rows[index].Cells["LastSurplus"].Value = lastRound.Balance;
-                    }
-                    else
-                    {
-                        lotteryView.Rows[index].Cells["LastSurplus"].Value = 0;
-                    }
-                    lotteryView.Rows[index].Cells["Surplus"].Value = playDetail.Balance;
                 }
             }
         }
@@ -135,7 +112,7 @@ namespace lottery
             {
                 currentRoundOrder = 1;
             }
-            Round round = new Round() { GameID = gameID, RoundOrder = currentRoundOrder, PlayTime = DateTime.Now,DealerID=dealerID };
+            Round round = new Round() { GameID = gameID, RoundOrder = currentRoundOrder, PlayTime = DateTime.Now, DealerID = dealerID };
             var model = db.Round.Add(round);
             db.SaveChanges();
             currentRoundId = model.RoundID;
@@ -222,7 +199,7 @@ namespace lottery
                     db.Player.Add(player); //将新增的闲家保存进数据库
                     db.SaveChanges();
                     playerId = player.PlayerID;
-                } 
+                }
                 #endregion
                 lastDetail = await db.PlayDetail.SingleOrDefaultAsync(p => p.PlayerID == playerId && p.RoundID == lastRoundId);
                 lastBalance = lastDetail == null ? 0 : lastDetail.Balance; //则赋值上把结余,如果该玩家没有上把，则为0
@@ -230,22 +207,21 @@ namespace lottery
                 detail.PlayerID = playerId;
                 detail.RoundID = currentRoundId; //保存本轮id
                 detail.GameID = gameID; //保存本局id
-                lbRoundCount.Text = $"当前第{currentRoundOrder}轮";
                 detail.BetMoney = playerBetMoney;
                 detail.OriginNumber = row.Cells["OriginNumber"].Value.ToString();
 
                 CompareResult result = Helper.Compare(multiple, dealerPoint);
-                if (result==CompareResult.DealerWin)
+                if (result == CompareResult.DealerWin)
                 {
                     detail.FinalMultiple = -dealerPoint; //倍数变为庄家点数的负数
                     LostPlayInfo.Add(new PlayInfo() { Detail = detail, LastBalance = lastBalance });
                 }
-                else if (result==CompareResult.PlayerWin)
+                else if (result == CompareResult.PlayerWin)
                 {
                     detail.FinalMultiple = multiple;
                     WinPlayInfo.Add(new PlayInfo() { Detail = detail, LastBalance = lastBalance });
                 }
-                else if (result==CompareResult.Even)
+                else if (result == CompareResult.Even)
                 {
                     detail.FinalMultiple = multiple;
                     balance = lastBalance;
@@ -260,27 +236,28 @@ namespace lottery
                 db.PlayDetail.Add(item.Detail);
             }
             double dealerLoseMoney = WinPlayInfo.Sum(l => l.Detail.BetMoney * l.Detail.FinalMultiple);
-            if (dealerLoseMoney >= 0) //如果庄家的钱够赔
+            if (dealerBalance - dealerLoseMoney >= 0) //如果庄家的钱够赔
             {
-                dealerProfit = dealerProfit -  dealerLoseMoney;
+                dealerProfit = dealerProfit - dealerLoseMoney;
                 foreach (var item in WinPlayInfo)
                 {
                     item.Detail.Profit = item.Detail.BetMoney * item.Detail.FinalMultiple;
                     item.Detail.Balance = item.LastBalance + item.Detail.Profit;
                     db.PlayDetail.Add(item.Detail);
                 }
+                dealerBalance = dealerBalance - dealerLoseMoney;
             }
             else //如果庄家的钱不够赔
             {
                 WinPlayInfo = WinPlayInfo.OrderByDescending(w => int.Parse(w.Detail.OriginNumber)).ToList();
                 foreach (var item in WinPlayInfo)
                 {
-                    item.Detail.Profit= item.Detail.BetMoney * item.Detail.FinalMultiple;
+                    item.Detail.Profit = item.Detail.BetMoney * item.Detail.FinalMultiple;
                     double remianing = dealerBalance - item.Detail.Profit;
-                    if (remianing>=0) //如果钱还够赔
+                    if (remianing >= 0) //如果钱还够赔
                     {
                         item.Detail.Balance = item.LastBalance + item.Detail.Profit;
-                        dealerProfit = dealerProfit -item.Detail.Profit;
+                        dealerProfit = dealerProfit - item.Detail.Profit;
                         dealerBalance = remianing;
                     }
                     else
@@ -293,6 +270,7 @@ namespace lottery
                 }
             }
             await db.SaveChangesAsync();
+            lbRoundCount.Text = $"当前第{currentRoundOrder}轮";
             txtDealerProfit.Text = dealerProfit.ToString();
             txtDealerBalance.Text = dealerBalance.ToString();
             UpdateRoundStatus(dealerProfit);
