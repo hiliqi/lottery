@@ -94,6 +94,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Compare.cs" />
     <Compile Include="DB\DBSession.cs" />
     <Compile Include="Detail.cs">
       <SubType>Form</SubType>
@@ -101,12 +102,25 @@
     <Compile Include="Detail.Designer.cs">
       <DependentUpon>Detail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helper.cs" />
+    <Compile Include="Common\Helper.cs" />
     <Compile Include="Migrations\201611050335530_InitialCreate.cs" />
     <Compile Include="Migrations\201611050335530_InitialCreate.Designer.cs">
       <DependentUpon>201611050335530_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611080634309_AlterPlayer.cs" />
+    <Compile Include="Migrations\201611080634309_AlterPlayer.Designer.cs">
+      <DependentUpon>201611080634309_AlterPlayer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611080817244_AddFinance.cs" />
+    <Compile Include="Migrations\201611080817244_AddFinance.Designer.cs">
+      <DependentUpon>201611080817244_AddFinance.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611080917129_AlterFinance.cs" />
+    <Compile Include="Migrations\201611080917129_AlterFinance.Designer.cs">
+      <DependentUpon>201611080917129_AlterFinance.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\FinanceInfo.cs" />
     <Compile Include="Models\Game.cs" />
     <Compile Include="DB\LotteryDbContext.cs" />
     <Compile Include="Models\PlayInfo.cs" />
@@ -127,7 +141,6 @@
     <Compile Include="Report.Designer.cs">
       <DependentUpon>Report.cs</DependentUpon>
     </Compile>
-    <Compile Include="ReportModel.cs" />
     <Compile Include="Result.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -145,6 +158,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611050335530_InitialCreate.resx">
       <DependentUpon>201611050335530_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611080634309_AlterPlayer.resx">
+      <DependentUpon>201611080634309_AlterPlayer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611080817244_AddFinance.resx">
+      <DependentUpon>201611080817244_AddFinance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611080917129_AlterFinance.resx">
+      <DependentUpon>201611080917129_AlterFinance.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Play.resx">
       <DependentUpon>Play.cs</DependentUpon>

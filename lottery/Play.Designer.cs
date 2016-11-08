@@ -39,7 +39,6 @@
             this.DealerProfit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LastSurplus = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Surplus = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ItemEdit = new System.Windows.Forms.DataGridViewButtonColumn();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lbTime = new System.Windows.Forms.Label();
             this.txtDealerBalance = new System.Windows.Forms.TextBox();
@@ -47,7 +46,6 @@
             this.lb5 = new System.Windows.Forms.Label();
             this.txtDealerProfit = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.txtDealerPoint = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.txtBetMoney = new System.Windows.Forms.TextBox();
@@ -55,6 +53,7 @@
             this.txtDealer = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnEdit = new System.Windows.Forms.Button();
             this.txtAddDeal = new System.Windows.Forms.TextBox();
             this.btnAddDealMoney = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
@@ -62,6 +61,8 @@
             this.btnChangeDealer = new System.Windows.Forms.Button();
             this.btnRemovePlayer = new System.Windows.Forms.Button();
             this.btnAddPlayer = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtDealerMultiple = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.lotteryView)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -69,6 +70,7 @@
             // 
             // lotteryView
             // 
+            this.lotteryView.AllowDrop = true;
             this.lotteryView.AllowUserToAddRows = false;
             this.lotteryView.AllowUserToOrderColumns = true;
             this.lotteryView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -82,14 +84,16 @@
             this.PlayerProfit,
             this.DealerProfit,
             this.LastSurplus,
-            this.Surplus,
-            this.ItemEdit});
+            this.Surplus});
             this.lotteryView.Location = new System.Drawing.Point(30, 50);
             this.lotteryView.Name = "lotteryView";
             this.lotteryView.RowTemplate.Height = 23;
-            this.lotteryView.Size = new System.Drawing.Size(956, 466);
+            this.lotteryView.Size = new System.Drawing.Size(954, 466);
             this.lotteryView.TabIndex = 1;
-            this.lotteryView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.lotteryView_CellContentClick);
+            this.lotteryView.DragDrop += new System.Windows.Forms.DragEventHandler(this.lotteryView_DragDrop);
+            this.lotteryView.DragOver += new System.Windows.Forms.DragEventHandler(this.lotteryView_DragOver);
+            this.lotteryView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lotteryView_MouseDown);
+            this.lotteryView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lotteryView_MouseMove);
             // 
             // PlayDetailID
             // 
@@ -153,22 +157,16 @@
             this.Surplus.Name = "Surplus";
             this.Surplus.ReadOnly = true;
             // 
-            // ItemEdit
-            // 
-            this.ItemEdit.HeaderText = "编辑";
-            this.ItemEdit.Name = "ItemEdit";
-            this.ItemEdit.Text = "修改";
-            this.ItemEdit.UseColumnTextForButtonValue = true;
-            // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.txtDealerMultiple);
+            this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.lbTime);
             this.groupBox1.Controls.Add(this.txtDealerBalance);
             this.groupBox1.Controls.Add(this.lbRoundCount);
             this.groupBox1.Controls.Add(this.lb5);
             this.groupBox1.Controls.Add(this.txtDealerProfit);
             this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.txtDealerPoint);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.txtBetMoney);
@@ -185,7 +183,7 @@
             // lbTime
             // 
             this.lbTime.AutoSize = true;
-            this.lbTime.Location = new System.Drawing.Point(811, 41);
+            this.lbTime.Location = new System.Drawing.Point(859, 41);
             this.lbTime.Name = "lbTime";
             this.lbTime.Size = new System.Drawing.Size(41, 12);
             this.lbTime.TabIndex = 6;
@@ -193,7 +191,7 @@
             // 
             // txtDealerBalance
             // 
-            this.txtDealerBalance.Location = new System.Drawing.Point(189, 29);
+            this.txtDealerBalance.Location = new System.Drawing.Point(168, 29);
             this.txtDealerBalance.Name = "txtDealerBalance";
             this.txtDealerBalance.ReadOnly = true;
             this.txtDealerBalance.Size = new System.Drawing.Size(89, 21);
@@ -202,7 +200,7 @@
             // lbRoundCount
             // 
             this.lbRoundCount.AutoSize = true;
-            this.lbRoundCount.Location = new System.Drawing.Point(811, 20);
+            this.lbRoundCount.Location = new System.Drawing.Point(859, 20);
             this.lbRoundCount.Name = "lbRoundCount";
             this.lbRoundCount.Size = new System.Drawing.Size(59, 12);
             this.lbRoundCount.TabIndex = 5;
@@ -213,13 +211,13 @@
             this.lb5.AutoSize = true;
             this.lb5.Location = new System.Drawing.Point(139, 33);
             this.lb5.Name = "lb5";
-            this.lb5.Size = new System.Drawing.Size(53, 12);
+            this.lb5.Size = new System.Drawing.Size(29, 12);
             this.lb5.TabIndex = 9;
-            this.lb5.Text = "庄家总计";
+            this.lb5.Text = "总计";
             // 
             // txtDealerProfit
             // 
-            this.txtDealerProfit.Location = new System.Drawing.Point(487, 29);
+            this.txtDealerProfit.Location = new System.Drawing.Point(537, 29);
             this.txtDealerProfit.Name = "txtDealerProfit";
             this.txtDealerProfit.ReadOnly = true;
             this.txtDealerProfit.Size = new System.Drawing.Size(109, 21);
@@ -228,24 +226,15 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(437, 32);
+            this.label4.Location = new System.Drawing.Point(482, 32);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(53, 12);
             this.label4.TabIndex = 7;
             this.label4.Text = "本轮盈亏";
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(396, 27);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(31, 23);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "|";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
             // txtDealerPoint
             // 
-            this.txtDealerPoint.Location = new System.Drawing.Point(340, 29);
+            this.txtDealerPoint.Location = new System.Drawing.Point(302, 29);
             this.txtDealerPoint.Name = "txtDealerPoint";
             this.txtDealerPoint.Size = new System.Drawing.Size(51, 21);
             this.txtDealerPoint.TabIndex = 5;
@@ -253,15 +242,15 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(289, 32);
+            this.label3.Location = new System.Drawing.Point(273, 32);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(53, 12);
+            this.label3.Size = new System.Drawing.Size(29, 12);
             this.label3.TabIndex = 4;
-            this.label3.Text = "庄家点数";
+            this.label3.Text = "点数";
             // 
             // txtBetMoney
             // 
-            this.txtBetMoney.Location = new System.Drawing.Point(662, 29);
+            this.txtBetMoney.Location = new System.Drawing.Point(712, 29);
             this.txtBetMoney.Name = "txtBetMoney";
             this.txtBetMoney.ReadOnly = true;
             this.txtBetMoney.Size = new System.Drawing.Size(125, 21);
@@ -270,7 +259,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(611, 34);
+            this.label2.Location = new System.Drawing.Point(659, 34);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(53, 12);
             this.label2.TabIndex = 2;
@@ -295,6 +284,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.btnEdit);
             this.groupBox2.Controls.Add(this.txtAddDeal);
             this.groupBox2.Controls.Add(this.btnAddDealMoney);
             this.groupBox2.Controls.Add(this.btnNew);
@@ -309,6 +299,16 @@
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "结果";
+            // 
+            // btnEdit
+            // 
+            this.btnEdit.Location = new System.Drawing.Point(561, 21);
+            this.btnEdit.Name = "btnEdit";
+            this.btnEdit.Size = new System.Drawing.Size(75, 23);
+            this.btnEdit.TabIndex = 11;
+            this.btnEdit.Text = "修改";
+            this.btnEdit.UseVisualStyleBackColor = true;
+            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
             // 
             // txtAddDeal
             // 
@@ -329,7 +329,7 @@
             // 
             // btnNew
             // 
-            this.btnNew.Location = new System.Drawing.Point(560, 21);
+            this.btnNew.Location = new System.Drawing.Point(648, 21);
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(75, 23);
             this.btnNew.TabIndex = 7;
@@ -349,7 +349,7 @@
             // 
             // btnChangeDealer
             // 
-            this.btnChangeDealer.Location = new System.Drawing.Point(813, 21);
+            this.btnChangeDealer.Location = new System.Drawing.Point(909, 21);
             this.btnChangeDealer.Name = "btnChangeDealer";
             this.btnChangeDealer.Size = new System.Drawing.Size(75, 23);
             this.btnChangeDealer.TabIndex = 8;
@@ -359,7 +359,7 @@
             // 
             // btnRemovePlayer
             // 
-            this.btnRemovePlayer.Location = new System.Drawing.Point(732, 21);
+            this.btnRemovePlayer.Location = new System.Drawing.Point(822, 21);
             this.btnRemovePlayer.Name = "btnRemovePlayer";
             this.btnRemovePlayer.Size = new System.Drawing.Size(75, 23);
             this.btnRemovePlayer.TabIndex = 6;
@@ -369,13 +369,29 @@
             // 
             // btnAddPlayer
             // 
-            this.btnAddPlayer.Location = new System.Drawing.Point(646, 21);
+            this.btnAddPlayer.Location = new System.Drawing.Point(735, 21);
             this.btnAddPlayer.Name = "btnAddPlayer";
             this.btnAddPlayer.Size = new System.Drawing.Size(75, 23);
             this.btnAddPlayer.TabIndex = 5;
             this.btnAddPlayer.Text = "增加投注";
             this.btnAddPlayer.UseVisualStyleBackColor = true;
             this.btnAddPlayer.Click += new System.EventHandler(this.btnAddPlayer_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(371, 34);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(29, 12);
+            this.label5.TabIndex = 11;
+            this.label5.Text = "倍数";
+            // 
+            // txtDealerMultiple
+            // 
+            this.txtDealerMultiple.Location = new System.Drawing.Point(406, 30);
+            this.txtDealerMultiple.Name = "txtDealerMultiple";
+            this.txtDealerMultiple.Size = new System.Drawing.Size(55, 21);
+            this.txtDealerMultiple.TabIndex = 12;
             // 
             // Play
             // 
@@ -410,7 +426,6 @@
         private System.Windows.Forms.Label lb5;
         private System.Windows.Forms.TextBox txtDealerProfit;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btnCal;
         private System.Windows.Forms.Button btnAddPlayer;
@@ -421,6 +436,7 @@
         private System.Windows.Forms.Button btnAddDealMoney;
         private System.Windows.Forms.TextBox txtAddDeal;
         private System.Windows.Forms.Label lbTime;
+        private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.DataGridViewTextBoxColumn PlayDetailID;
         private System.Windows.Forms.DataGridViewTextBoxColumn PlayerID;
         private System.Windows.Forms.DataGridViewTextBoxColumn Player;
@@ -431,6 +447,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn DealerProfit;
         private System.Windows.Forms.DataGridViewTextBoxColumn LastSurplus;
         private System.Windows.Forms.DataGridViewTextBoxColumn Surplus;
-        private System.Windows.Forms.DataGridViewButtonColumn ItemEdit;
+        private System.Windows.Forms.TextBox txtDealerMultiple;
+        private System.Windows.Forms.Label label5;
     }
 }

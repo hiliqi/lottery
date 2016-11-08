@@ -31,12 +31,12 @@
             this.txtPlayer = new System.Windows.Forms.TextBox();
             this.btnAddPlayer = new System.Windows.Forms.Button();
             this.userView = new System.Windows.Forms.DataGridView();
-            this.btnLoadView = new System.Windows.Forms.Button();
             this.PlayerID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PlayerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Money = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Delete = new System.Windows.Forms.DataGridViewButtonColumn();
             this.GoBet = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.btnLoadView = new System.Windows.Forms.Button();
             this.lbMsg = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.userView)).BeginInit();
             this.SuspendLayout();
@@ -74,16 +74,6 @@
             this.userView.TabIndex = 2;
             this.userView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.userView_CellContentClick);
             // 
-            // btnLoadView
-            // 
-            this.btnLoadView.Location = new System.Drawing.Point(223, 28);
-            this.btnLoadView.Name = "btnLoadView";
-            this.btnLoadView.Size = new System.Drawing.Size(75, 23);
-            this.btnLoadView.TabIndex = 3;
-            this.btnLoadView.Text = "加载玩家";
-            this.btnLoadView.UseVisualStyleBackColor = true;
-            this.btnLoadView.Click += new System.EventHandler(this.btnLoadView_Click);
-            // 
             // PlayerID
             // 
             this.PlayerID.HeaderText = "玩家ID";
@@ -116,6 +106,16 @@
             this.GoBet.ReadOnly = true;
             this.GoBet.Text = "开庄";
             this.GoBet.UseColumnTextForButtonValue = true;
+            // 
+            // btnLoadView
+            // 
+            this.btnLoadView.Location = new System.Drawing.Point(223, 28);
+            this.btnLoadView.Name = "btnLoadView";
+            this.btnLoadView.Size = new System.Drawing.Size(75, 23);
+            this.btnLoadView.TabIndex = 3;
+            this.btnLoadView.Text = "加载玩家";
+            this.btnLoadView.UseVisualStyleBackColor = true;
+            this.btnLoadView.Click += new System.EventHandler(this.btnLoadView_Click);
             // 
             // lbMsg
             // 

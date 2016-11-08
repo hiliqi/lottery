@@ -15,6 +15,9 @@ namespace lottery
 
     public partial class Play : Form
     {
+        private Rectangle dragBoxFromMouseDown;
+        private int rowIndexFromMouseDown;
+        private int rowIndexOfItemUnderMouseToDrop;
         private string dealerName; //庄家名称
         private int dealerID;
         private double betMoney; //开庄金额
@@ -28,7 +31,7 @@ namespace lottery
         private double dealerBalance;//庄家结余
         private LotteryDbContext db;
         private bool isNewRound;
-        private List<string> tempPlayerName = new List<string>(); //保存从数据库里查出来的闲家名字，用来检查新添加的闲家重名
+        private List<string> tempPlayerName; //保存从数据库里查出来的闲家名字，用来检查新添加的闲家重名
 
         public Play(string dealerName, double betMoney, int gameID, int dealerID)
         {
@@ -36,6 +39,7 @@ namespace lottery
             this.dealerID = dealerID;
             this.betMoney = betMoney;
             this.gameID = gameID;
+            tempPlayerName = new List<string>();
             isNewRound = false;
             db = DBSession.GetDbContext();
             InitializeComponent();
@@ -50,32 +54,32 @@ namespace lottery
         }
 
         //刷新表格
-        public void ReLoadTable()
+        public async void ReLoadTable()
         {
             lotteryView.Rows.Clear();
-            var list = db.Player.Where(p => p.IsDel == false).ToList();
-            foreach (var player in list)
+            var detaiList = await db.PlayDetail.Where(d => d.RoundID == currentRoundId).OrderByDescending(d => d.Balance).ToListAsync();
+
+            //db = new LotteryDbContext();
+            foreach (var detail in detaiList)
             {
-                if (player.PlayerID == dealerID) //如果是庄家
+                if (detail.PlayerID == dealerID) //如果是庄家
                 {
                     continue;
                 }
                 int index = lotteryView.Rows.Add();
-                var playDetail = db.PlayDetail.SingleOrDefault(p => p.PlayerID == player.PlayerID && p.RoundID == currentRoundId); //查出本盘数据
-                var lastDetail = db.PlayDetail.SingleOrDefault(p => p.PlayerID == player.PlayerID && p.Round.GameID == gameID && p.Round.RoundOrder == lastRoundOrder);
-                if (playDetail != null) //本盘数据
+                var lastDetail = await db.PlayDetail.SingleOrDefaultAsync(p => p.PlayerID == detail.PlayerID && p.Round.GameID == gameID && p.Round.RoundOrder == lastRoundOrder);
+                if (detail != null) //本盘数据
                 {
-                    lotteryView.Rows[index].Cells["PlayerID"].Value = player.PlayerID;
-                    lotteryView.Rows[index].Cells["Player"].Value = player.Name;
+                    lotteryView.Rows[index].Cells["PlayerID"].Value = detail.PlayerID;
+                    lotteryView.Rows[index].Cells["Player"].Value = detail.Player.Name;
                     lotteryView.Rows[index].Cells["LastSurplus"].Value = lastDetail == null ? 0 : lastDetail.Balance;
-                    lotteryView.Rows[index].Cells["PlayDetailID"].Value = playDetail.PlayDetailID;
-                    lotteryView.Rows[index].Cells["PlayerID"].Value = player.PlayerID;
-                    lotteryView.Rows[index].Cells["Player"].Value = player.Name;
-                    lotteryView.Rows[index].Cells["Money"].Value = playDetail.BetMoney;
-                    lotteryView.Rows[index].Cells["Multiple"].Value = playDetail.FinalMultiple;
-                    lotteryView.Rows[index].Cells["OriginNumber"].Value = playDetail.OriginNumber;
-                    lotteryView.Rows[index].Cells["PlayerProfit"].Value = playDetail.Profit;
-                    lotteryView.Rows[index].Cells["DealerProfit"].Value = -playDetail.Profit;
+                    lotteryView.Rows[index].Cells["Surplus"].Value = detail.Balance;
+                    lotteryView.Rows[index].Cells["PlayDetailID"].Value = detail.PlayDetailID;
+                    lotteryView.Rows[index].Cells["Money"].Value = detail.BetMoney;
+                    lotteryView.Rows[index].Cells["Multiple"].Value = detail.FinalMultiple;
+                    lotteryView.Rows[index].Cells["OriginNumber"].Value = detail.OriginNumber;
+                    lotteryView.Rows[index].Cells["PlayerProfit"].Value = detail.Profit;
+                    lotteryView.Rows[index].Cells["DealerProfit"].Value = -detail.Profit;
                 }
             }
         }
@@ -119,11 +123,14 @@ namespace lottery
             isNewRound = true; //表示新的一轮
             lbTime.Text = DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
         }
-
-        //开始计算
-        private async void btnCal_Click(object sender, EventArgs e)
+       
+        private void btnCal_Click(object sender, EventArgs e)
         {
-
+            Calculate();
+        }
+        //开始计算
+        private async void Calculate()
+        {
             if (!isNewRound)
             {
                 MessageBox.Show("当前轮已结束，请开始新的一轮");
@@ -135,9 +142,8 @@ namespace lottery
                 MessageBox.Show("点数和倍数请输入三位数");
                 return;
             }
-            txtDealerPoint.Text = dealerPoint.ToString();
+            txtDealerMultiple.Text = dealerPoint.ToString();
             PlayDetail detail = null;
-            PlayDetail lastDetail = null;
             int playerBetMoney = 0; //闲家投注
             double dealerProfit = 0; //庄家本轮盈亏
             List<PlayInfo> WinPlayInfo = new List<PlayInfo>(); //保存赢了的闲家信息
@@ -201,14 +207,23 @@ namespace lottery
                     playerId = player.PlayerID;
                 }
                 #endregion
-                lastDetail = await db.PlayDetail.SingleOrDefaultAsync(p => p.PlayerID == playerId && p.RoundID == lastRoundId);
-                lastBalance = lastDetail == null ? 0 : lastDetail.Balance; //则赋值上把结余,如果该玩家没有上把，则为0
+                var financeInfoList = db.FinanceInfo.Where(f => f.PlayerID == playerId);
+                if (financeInfoList.Count()>0)
+                {
+                    lastBalance = financeInfoList.Sum(f => f.Money);
+                }
+                else
+                {
+                    lastBalance = 0;
+                }
+
                 detail = new PlayDetail();
                 detail.PlayerID = playerId;
                 detail.RoundID = currentRoundId; //保存本轮id
                 detail.GameID = gameID; //保存本局id
                 detail.BetMoney = playerBetMoney;
                 detail.OriginNumber = row.Cells["OriginNumber"].Value.ToString();
+                detail.Multiple = multiple;
 
                 CompareResult result = Helper.Compare(multiple, dealerPoint);
                 if (result == CompareResult.DealerWin)
@@ -225,49 +240,90 @@ namespace lottery
                 {
                     detail.FinalMultiple = multiple;
                     balance = lastBalance;
+                    db.PlayDetail.Add(detail);
                 }
             }
-            dealerProfit = LostPlayInfo.Sum(l => l.Detail.BetMoney * l.Detail.FinalMultiple);
+            dealerProfit = LostPlayInfo.Sum(l => l.Detail.BetMoney * Math.Abs(l.Detail.FinalMultiple));
             dealerBalance += dealerProfit; //先把输家的钱吃进去
+            var dealerFinanceInfo = new FinanceInfo()
+            {
+                PlayerID = dealerID,
+                GameID = gameID,
+                LogTime = DateTime.Now,
+                Money = dealerProfit //庄家赢的钱
+            };
+            db.FinanceInfo.Add(dealerFinanceInfo);
             foreach (var item in LostPlayInfo)
             {
                 item.Detail.Profit = item.Detail.BetMoney * item.Detail.FinalMultiple;
                 item.Detail.Balance = item.LastBalance + item.Detail.Profit;
+                var playerFinanceInfo = new FinanceInfo()
+                {
+                    PlayerID = item.Detail.PlayerID,
+                    GameID = gameID,
+                    LogTime = DateTime.Now,
+                    Money = item.Detail.Profit //闲家输的钱
+                };
+                db.FinanceInfo.Add(playerFinanceInfo);
+                var player = db.Player.SingleOrDefault(p => p.PlayerID == item.Detail.PlayerID);
+                db.Entry(player).State = EntityState.Modified;
                 db.PlayDetail.Add(item.Detail);
             }
             double dealerLoseMoney = WinPlayInfo.Sum(l => l.Detail.BetMoney * l.Detail.FinalMultiple);
-            if (dealerBalance - dealerLoseMoney >= 0) //如果庄家的钱够赔
+            WinPlayInfo = WinPlayInfo.OrderByDescending(w => w.Detail.Multiple).ThenByDescending(w => int.Parse(w.Detail.OriginNumber)).ThenByDescending(w => w.Detail.BetMoney).ToList();
+            foreach (var item in WinPlayInfo)
             {
-                dealerProfit = dealerProfit - dealerLoseMoney;
-                foreach (var item in WinPlayInfo)
+                item.Detail.Profit = item.Detail.BetMoney * item.Detail.FinalMultiple;
+                double remianing = dealerBalance - item.Detail.Profit;
+                if (remianing >= 0) //如果钱还够赔
                 {
-                    item.Detail.Profit = item.Detail.BetMoney * item.Detail.FinalMultiple;
                     item.Detail.Balance = item.LastBalance + item.Detail.Profit;
-                    db.PlayDetail.Add(item.Detail);
+                    var player = db.Player.SingleOrDefault(p => p.PlayerID == item.Detail.PlayerID);
+                    var playerFinanceInfo = new FinanceInfo()
+                    {
+                        PlayerID = item.Detail.PlayerID,
+                        GameID = gameID,
+                        LogTime = DateTime.Now,
+                        Money = item.Detail.Profit //闲家赢的钱
+                    };
+                    var dealerFinanceInfo2 = new FinanceInfo()
+                    {
+                        PlayerID = dealerID,
+                        GameID = gameID,
+                        LogTime = DateTime.Now,
+                        Money = -item.Detail.Profit //闲家输的钱
+                    };
+                    db.FinanceInfo.Add(playerFinanceInfo);
+                    db.FinanceInfo.Add(dealerFinanceInfo2);
+                    db.Entry(player).State = EntityState.Modified;
+                    dealerProfit = dealerProfit - item.Detail.Profit;
+                    dealerBalance = remianing;
                 }
-                dealerBalance = dealerBalance - dealerLoseMoney;
-            }
-            else //如果庄家的钱不够赔
-            {
-                WinPlayInfo = WinPlayInfo.OrderByDescending(w => int.Parse(w.Detail.OriginNumber)).ToList();
-                foreach (var item in WinPlayInfo)
+                else
                 {
-                    item.Detail.Profit = item.Detail.BetMoney * item.Detail.FinalMultiple;
-                    double remianing = dealerBalance - item.Detail.Profit;
-                    if (remianing >= 0) //如果钱还够赔
+                    item.Detail.Balance = item.LastBalance + item.Detail.Profit - Math.Abs(remianing); //赔额出了负数，要减去这部分钱
+                    var player = db.Player.SingleOrDefault(p => p.PlayerID == item.Detail.PlayerID);
+                    var playerFinanceInfo = new FinanceInfo()
                     {
-                        item.Detail.Balance = item.LastBalance + item.Detail.Profit;
-                        dealerProfit = dealerProfit - item.Detail.Profit;
-                        dealerBalance = remianing;
-                    }
-                    else
+                        PlayerID = item.Detail.PlayerID,
+                        GameID = gameID,
+                        LogTime = DateTime.Now,
+                        Money = item.Detail.Profit - Math.Abs(remianing)//闲家赢的钱
+                    };
+                    var dealerFinanceInfo2 = new FinanceInfo()
                     {
-                        item.Detail.Balance = item.LastBalance + item.Detail.Profit - Math.Abs(remianing); //赔额出了负数，要减去这部分钱
-                        dealerProfit = dealerProfit - item.Detail.Profit + Math.Abs(remianing);
-                        dealerBalance = 0;
-                    }
-                    db.PlayDetail.Add(item.Detail);
+                        PlayerID = dealerID,
+                        GameID = gameID,
+                        LogTime = DateTime.Now,
+                        Money = -(item.Detail.Profit - Math.Abs(remianing))//闲家输的钱
+                    };
+                    db.FinanceInfo.Add(playerFinanceInfo);
+                    db.FinanceInfo.Add(dealerFinanceInfo2);
+                    db.Entry(player).State = EntityState.Modified;
+                    dealerProfit = dealerProfit - item.Detail.Profit + Math.Abs(remianing);
+                    dealerBalance = 0;
                 }
+                db.PlayDetail.Add(item.Detail);
             }
             await db.SaveChangesAsync();
             lbRoundCount.Text = $"当前第{currentRoundOrder}轮";
@@ -334,6 +390,7 @@ namespace lottery
                 return;
             }
             txtDealerPoint.Text = string.Empty;
+            txtDealerMultiple.Text = string.Empty;
             isNewRound = true;
             lotteryView.Rows.Clear();
             InitRound();
@@ -348,93 +405,6 @@ namespace lottery
             Close();
         }
 
-        private void lotteryView_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            var senderGrid = (DataGridView)sender;
-            if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
-                e.RowIndex >= 0)
-            {
-                int multiple = 0;
-                int finalMultiple = 0;
-                double profit = 0;
-                double betMoney = 0;
-                double balance = 0;
-                double lastBalance = 0;
-                if (senderGrid.Rows[e.RowIndex].Cells["PlayDetailID"].Value == null)
-                {
-                    MessageBox.Show("闲家为空");
-                    return;
-                }
-                if (senderGrid.Rows[e.RowIndex].Cells["Money"].Value == null)
-                {
-                    MessageBox.Show("金额为空");
-                    return;
-                }
-                if (senderGrid.Rows[e.RowIndex].Cells["Multiple"].Value == null)
-                {
-                    MessageBox.Show("倍数为空");
-                    return;
-                }
-                int playerDetailId = int.Parse(senderGrid.Rows[e.RowIndex].Cells["PlayDetailID"].Value.ToString());
-                bool b = double.TryParse(senderGrid.Rows[e.RowIndex].Cells["Money"].Value.ToString(), out betMoney);
-                multiple = Helper.CalPoint(senderGrid.Rows[e.RowIndex].Cells["OriginNumber"].Value.ToString());
-                if (multiple == -1)
-                {
-                    MessageBox.Show("点数和倍数请输入三位数");
-                    return;
-                }
-                var model = db.PlayDetail.SingleOrDefault(p => p.PlayDetailID == playerDetailId);
-                int roundId = model.RoundID;
-                //找出本轮庄家信息
-                var dealerModel = db.PlayDetail.SingleOrDefault(p => p.RoundID == roundId);
-                //还原庄家数据
-                dealerModel.Profit = dealerModel.Profit - (-model.Profit);
-                dealerBalance = dealerModel.Balance - (-model.Profit);
-                dealerModel.Balance = dealerBalance;
-                if (multiple == 0 || dealerPoint == 0) //玩家拿到0.01
-                {
-                    finalMultiple = multiple;
-                    balance = lastBalance;
-                }
-                else if (multiple > dealerPoint) //闲家点数大，则闲家赢，按闲家倍数赔
-                {
-                    finalMultiple = multiple;
-                    profit = Math.Abs(betMoney) * multiple; //计算出盈亏
-                    balance = profit + lastBalance; //计算出本次闲家结余
-                    dealerModel.Profit += -profit;
-                    dealerBalance += -profit;
-                    dealerModel.Balance = dealerBalance;
-                }
-                else if (multiple < dealerPoint) //闲家点数小，则庄家赢，按庄家点数赔
-                {
-                    finalMultiple = -dealerPoint; //倍数变为庄家点数的负数
-                    profit = Math.Abs(betMoney) * finalMultiple;
-                    balance = profit + lastBalance; //计算出本次闲家结余
-                    dealerModel.Profit += -profit;
-                    dealerBalance += -profit;
-                    dealerModel.Balance = dealerBalance;
-                }
-                else //如果打平
-                {
-                    finalMultiple = multiple;
-                    balance = lastBalance;
-                }
-                model.Multiple = multiple;
-                model.OriginNumber = senderGrid.Rows[e.RowIndex].Cells["OriginNumber"].Value.ToString();
-                model.BetMoney = betMoney;
-                model.FinalMultiple = finalMultiple;
-                model.Balance = balance;
-                model.Profit = profit;
-                db.Entry(model).State = EntityState.Modified;
-                db.Entry(dealerModel).State = EntityState.Modified;
-                db.SaveChanges();
-                txtDealerProfit.Text = dealerModel.Profit.ToString();
-                txtDealerBalance.Text = dealerModel.Balance.ToString();
-                ReLoadTable();
-                UpdateGameStatus();
-            }
-        }
-
         private void btnAddDealMoney_Click(object sender, EventArgs e)
         {
             double temp = 0;
@@ -443,6 +413,14 @@ namespace lottery
                 MessageBox.Show("请输入正确的追庄金额");
                 return;
             }
+            var financeInfo = new FinanceInfo()
+            {
+                PlayerID = dealerID,
+                GameID = gameID,
+                LogTime = DateTime.Now,
+                Money = -temp //庄家该出的钱
+            };
+            db.FinanceInfo.Add(financeInfo);
             betMoney += temp * 0.98; //追加开庄金额
             dealerBalance += temp * 0.98; //追加庄家结余            
             var game = db.Game.SingleOrDefault(g => g.GameID == gameID);
@@ -460,6 +438,96 @@ namespace lottery
             txtBetMoney.Text = betMoney.ToString();
             txtDealerBalance.Text = dealerBalance.ToString();
             txtAddDeal.Clear();
+        }
+
+        private void lotteryView_DragDrop(object sender, DragEventArgs e)
+        {
+            // The mouse locations are relative to the screen, so they must be 
+            // converted to client coordinates.
+            Point clientPoint = lotteryView.PointToClient(new Point(e.X, e.Y));
+
+            // Get the row index of the item the mouse is below. 
+            rowIndexOfItemUnderMouseToDrop =
+                lotteryView.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
+
+            // If the drag operation was a move then remove and insert the row.
+            if (e.Effect == DragDropEffects.Move)
+            {
+                DataGridViewRow rowToMove = e.Data.GetData(
+                    typeof(DataGridViewRow)) as DataGridViewRow;
+                lotteryView.Rows.RemoveAt(rowIndexFromMouseDown);
+                lotteryView.Rows.Insert(rowIndexOfItemUnderMouseToDrop, rowToMove);
+
+            }
+        }
+
+        private void lotteryView_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void lotteryView_MouseDown(object sender, MouseEventArgs e)
+        {
+            // Get the index of the item the mouse is below.
+            rowIndexFromMouseDown = lotteryView.HitTest(e.X, e.Y).RowIndex;
+            if (rowIndexFromMouseDown != -1)
+            {
+                // Remember the point where the mouse down occurred. 
+                // The DragSize indicates the size that the mouse can move 
+                // before a drag event should be started.                
+                Size dragSize = SystemInformation.DragSize;
+
+                // Create a rectangle using the DragSize, with the mouse position being
+                // at the center of the rectangle.
+                dragBoxFromMouseDown = new Rectangle(new Point(e.X - (dragSize.Width / 2),
+                                                               e.Y - (dragSize.Height / 2)),
+                                    dragSize);
+            }
+            else
+                // Reset the rectangle if the mouse is not over an item in the ListBox.
+                dragBoxFromMouseDown = Rectangle.Empty;
+        }
+
+        private void lotteryView_MouseMove(object sender, MouseEventArgs e)
+        {
+            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+            {
+                // If the mouse moves outside the rectangle, start the drag.
+                if (dragBoxFromMouseDown != Rectangle.Empty &&
+                    !dragBoxFromMouseDown.Contains(e.X, e.Y))
+                {
+
+                    // Proceed with the drag and drop, passing in the list item.                    
+                    DragDropEffects dropEffect = lotteryView.DoDragDrop(
+                    lotteryView.Rows[rowIndexFromMouseDown],
+                    DragDropEffects.Move);
+                }
+            }
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            var list = db.PlayDetail.Where(r => r.RoundID == currentRoundId);
+            if (list.Count()<=0)
+            {
+                MessageBox.Show("本轮已经不能修改");
+            }
+            db.PlayDetail.RemoveRange(list);
+            var lastRound = db.Round.SingleOrDefault(r => r.RoundID == lastRoundId);
+            if (lastRound==null)
+            {
+                dealerBalance = betMoney;
+            }
+            else
+            {
+                dealerBalance = lastRound.DealerBalance; //还原庄家结余
+            }
+            var game = db.Game.SingleOrDefault(g => g.GameID == gameID);
+            game.Fee = dealerBalance * 0.02;
+            db.Entry(game).State = EntityState.Modified;
+            db.SaveChanges(); //先把本轮结果删掉
+            isNewRound = true;
+            Calculate();
         }
     }
 }

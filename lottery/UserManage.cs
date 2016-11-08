@@ -22,7 +22,6 @@ namespace lottery
             TextBox.CheckForIllegalCrossThreadCalls = false;
             ListBox.CheckForIllegalCrossThreadCalls = false;
             Button.CheckForIllegalCrossThreadCalls = false;
-            new Thread(() => { UserListInit(); }).Start();
         }
 
         //加载玩家列表
@@ -30,16 +29,21 @@ namespace lottery
         {
             lbMsg.Text = "正在加载玩家列表";
             userView.Rows.Clear();
-            int playerId;
-            string name;
             var list = db.Player.Where(d => d.IsDel == false).ToList();
             foreach (var player in list)
             {
                 int index = userView.Rows.Add();
-                playerId = player.PlayerID;
-                userView.Rows[index].Cells["PlayerID"].Value = playerId;
-                name = player.Name;
-                userView.Rows[index].Cells["PlayerName"].Value = name;
+                userView.Rows[index].Cells["PlayerID"].Value = player.PlayerID;
+                userView.Rows[index].Cells["PlayerName"].Value = player.Name;
+                var financeInfoList = db.FinanceInfo.Where(f => f.PlayerID == player.PlayerID);
+                if (financeInfoList.Count()>0)
+                {
+                    userView.Rows[index].Cells["Money"].Value = financeInfoList.Sum(f=>f.Money);
+                }
+                else
+                {
+                    userView.Rows[index].Cells["Money"].Value = 0;
+                }
             }
             lbMsg.Text = "加载完毕";
         }
@@ -61,7 +65,7 @@ namespace lottery
                       return;
                   }
                   lbMsg.Text = "正在添加玩家";
-                  db.Player.Add(new Player() { Name = name, IsDel = false });
+                  db.Player.Add(new Player() { Name = name, IsDel = false});
                   db.SaveChanges();
                   lbMsg.Text = "添加玩家成功";
                   txtPlayer.Clear();
@@ -97,7 +101,11 @@ namespace lottery
                 lbMsg.Text = "玩家金额不对";
                 return;
             }
-            money = Math.Abs(money);
+            if (money<=0)
+            {
+                lbMsg.Text = "庄家开庄金额必须为正数";
+                return;
+            }
 
             name = senderGrid.Rows[e.RowIndex].Cells["PlayerName"].Value.ToString();
             if (senderGrid.Columns[e.ColumnIndex].Name == "GoBet" && e.RowIndex >= 0) //开庄
@@ -120,6 +128,15 @@ namespace lottery
                     Fee = money*0.02
                 };
                 db.Game.Add(model);
+                db.SaveChanges();
+                var financeInfo = new FinanceInfo()
+                {
+                    PlayerID = playerId,
+                    GameID = model.GameID,
+                    LogTime = DateTime.Now,
+                    Money = -money //庄家该出的钱
+                };
+                db.FinanceInfo.Add(financeInfo);
                 db.SaveChanges();
                 money = money * 0.98; //抽成后开庄金额
                 Play play = new Play(name, money, model.GameID, playerId);

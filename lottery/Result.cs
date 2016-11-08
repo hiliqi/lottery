@@ -36,16 +36,7 @@ namespace lottery
                 MessageBox.Show("出错了！请重新开局");
                 return;
             }
-            var rounds = db.Round.Where(r => r.GameID == gameId); //本局所有轮
-            var lastRound = await rounds.OrderByDescending(r => r.RoundID).FirstOrDefaultAsync(); //查出最后一轮
-            if (lastRound == null)
-            {
-                MessageBox.Show("出错了！本局还没玩过一轮");
-                return;
-            }
-            var roundId = lastRound.RoundID;
-            var dealerDetail = db.PlayDetail.SingleOrDefault(p => p.RoundID == roundId);
-            lbDealerBalance.Text = lbDealerBalance.Text + dealerDetail.Balance.ToString(); //庄家结余
+            lbDealerBalance.Text = lbDealerBalance.Text + game.Balance.ToString(); //庄家结余
             lbDealerName.Text = lbDealerName.Text + game.Player.Name; //庄家名称
             lbBetMoney.Text = lbBetMoney.Text + game.BetMoney.ToString(); //开庄金额
             lbFee.Text = lbFee.Text + game.Fee; //结算金额
