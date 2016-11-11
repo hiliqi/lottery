@@ -29,16 +29,20 @@
         private void InitializeComponent()
         {
             this.resultView = new System.Windows.Forms.DataGridView();
+            this.PlayerID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PlayerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Balance = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lbDealerName = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.lbBetMoney = new System.Windows.Forms.Label();
             this.lbDealerBalance = new System.Windows.Forms.Label();
-            this.lbFee = new System.Windows.Forms.Label();
+            this.lbStartFee = new System.Windows.Forms.Label();
             this.lbPlayTime = new System.Windows.Forms.Label();
             this.lbEndTime = new System.Windows.Forms.Label();
-            this.PlayerID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PlayerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Balance = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lbAddFee = new System.Windows.Forms.Label();
+            this.lbEndFee = new System.Windows.Forms.Label();
+            this.lbTotalFee = new System.Windows.Forms.Label();
+            this.lbDealerProfit = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.resultView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -55,6 +59,24 @@
             this.resultView.Size = new System.Drawing.Size(583, 392);
             this.resultView.TabIndex = 0;
             this.resultView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.resultView_CellDoubleClick);
+            // 
+            // PlayerID
+            // 
+            this.PlayerID.HeaderText = "闲家ID";
+            this.PlayerID.Name = "PlayerID";
+            this.PlayerID.ReadOnly = true;
+            // 
+            // PlayerName
+            // 
+            this.PlayerName.HeaderText = "闲家名称";
+            this.PlayerName.Name = "PlayerName";
+            this.PlayerName.ReadOnly = true;
+            // 
+            // Balance
+            // 
+            this.Balance.HeaderText = "总盈亏";
+            this.Balance.Name = "Balance";
+            this.Balance.ReadOnly = true;
             // 
             // lbDealerName
             // 
@@ -78,7 +100,7 @@
             // lbBetMoney
             // 
             this.lbBetMoney.AutoSize = true;
-            this.lbBetMoney.Location = new System.Drawing.Point(60, 98);
+            this.lbBetMoney.Location = new System.Drawing.Point(60, 99);
             this.lbBetMoney.Name = "lbBetMoney";
             this.lbBetMoney.Size = new System.Drawing.Size(65, 12);
             this.lbBetMoney.TabIndex = 4;
@@ -87,20 +109,20 @@
             // lbDealerBalance
             // 
             this.lbDealerBalance.AutoSize = true;
-            this.lbDealerBalance.Location = new System.Drawing.Point(60, 132);
+            this.lbDealerBalance.Location = new System.Drawing.Point(60, 134);
             this.lbDealerBalance.Name = "lbDealerBalance";
             this.lbDealerBalance.Size = new System.Drawing.Size(65, 12);
             this.lbDealerBalance.TabIndex = 6;
             this.lbDealerBalance.Text = "庄家结余：";
             // 
-            // lbFee
+            // lbStartFee
             // 
-            this.lbFee.AutoSize = true;
-            this.lbFee.Location = new System.Drawing.Point(60, 491);
-            this.lbFee.Name = "lbFee";
-            this.lbFee.Size = new System.Drawing.Size(65, 12);
-            this.lbFee.TabIndex = 8;
-            this.lbFee.Text = "本局抽成：";
+            this.lbStartFee.AutoSize = true;
+            this.lbStartFee.Location = new System.Drawing.Point(36, 491);
+            this.lbStartFee.Name = "lbStartFee";
+            this.lbStartFee.Size = new System.Drawing.Size(65, 12);
+            this.lbStartFee.TabIndex = 8;
+            this.lbStartFee.Text = "开庄抽成：";
             // 
             // lbPlayTime
             // 
@@ -120,32 +142,54 @@
             this.lbEndTime.TabIndex = 10;
             this.lbEndTime.Text = "结局时间：";
             // 
-            // PlayerID
+            // lbAddFee
             // 
-            this.PlayerID.HeaderText = "闲家ID";
-            this.PlayerID.Name = "PlayerID";
-            this.PlayerID.ReadOnly = true;
+            this.lbAddFee.AutoSize = true;
+            this.lbAddFee.Location = new System.Drawing.Point(227, 491);
+            this.lbAddFee.Name = "lbAddFee";
+            this.lbAddFee.Size = new System.Drawing.Size(65, 12);
+            this.lbAddFee.TabIndex = 11;
+            this.lbAddFee.Text = "追庄抽成：";
             // 
-            // PlayerName
+            // lbEndFee
             // 
-            this.PlayerName.HeaderText = "闲家名称";
-            this.PlayerName.Name = "PlayerName";
-            this.PlayerName.ReadOnly = true;
+            this.lbEndFee.AutoSize = true;
+            this.lbEndFee.Location = new System.Drawing.Point(418, 491);
+            this.lbEndFee.Name = "lbEndFee";
+            this.lbEndFee.Size = new System.Drawing.Size(65, 12);
+            this.lbEndFee.TabIndex = 12;
+            this.lbEndFee.Text = "下庄抽成：";
             // 
-            // Balance
+            // lbTotalFee
             // 
-            this.Balance.HeaderText = "总盈亏";
-            this.Balance.Name = "Balance";
-            this.Balance.ReadOnly = true;
+            this.lbTotalFee.AutoSize = true;
+            this.lbTotalFee.Location = new System.Drawing.Point(609, 491);
+            this.lbTotalFee.Name = "lbTotalFee";
+            this.lbTotalFee.Size = new System.Drawing.Size(53, 12);
+            this.lbTotalFee.TabIndex = 13;
+            this.lbTotalFee.Text = "总抽成：";
+            // 
+            // lbDealerProfit
+            // 
+            this.lbDealerProfit.AutoSize = true;
+            this.lbDealerProfit.Location = new System.Drawing.Point(62, 169);
+            this.lbDealerProfit.Name = "lbDealerProfit";
+            this.lbDealerProfit.Size = new System.Drawing.Size(65, 12);
+            this.lbDealerProfit.TabIndex = 14;
+            this.lbDealerProfit.Text = "庄家盈利：";
             // 
             // Result
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(891, 530);
+            this.Controls.Add(this.lbDealerProfit);
+            this.Controls.Add(this.lbTotalFee);
+            this.Controls.Add(this.lbEndFee);
+            this.Controls.Add(this.lbAddFee);
             this.Controls.Add(this.lbEndTime);
             this.Controls.Add(this.lbPlayTime);
-            this.Controls.Add(this.lbFee);
+            this.Controls.Add(this.lbStartFee);
             this.Controls.Add(this.lbDealerBalance);
             this.Controls.Add(this.lbBetMoney);
             this.Controls.Add(this.btnOK);
@@ -167,11 +211,15 @@
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Label lbBetMoney;
         private System.Windows.Forms.Label lbDealerBalance;
-        private System.Windows.Forms.Label lbFee;
+        private System.Windows.Forms.Label lbStartFee;
         private System.Windows.Forms.Label lbPlayTime;
         private System.Windows.Forms.Label lbEndTime;
         private System.Windows.Forms.DataGridViewTextBoxColumn PlayerID;
         private System.Windows.Forms.DataGridViewTextBoxColumn PlayerName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Balance;
+        private System.Windows.Forms.Label lbAddFee;
+        private System.Windows.Forms.Label lbEndFee;
+        private System.Windows.Forms.Label lbTotalFee;
+        private System.Windows.Forms.Label lbDealerProfit;
     }
 }

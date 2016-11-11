@@ -34,16 +34,7 @@ namespace lottery
             {
                 int index = userView.Rows.Add();
                 userView.Rows[index].Cells["PlayerID"].Value = player.PlayerID;
-                userView.Rows[index].Cells["PlayerName"].Value = player.Name;
-                var financeInfoList = db.FinanceInfo.Where(f => f.PlayerID == player.PlayerID);
-                if (financeInfoList.Count()>0)
-                {
-                    userView.Rows[index].Cells["Money"].Value = financeInfoList.Sum(f=>f.Money);
-                }
-                else
-                {
-                    userView.Rows[index].Cells["Money"].Value = 0;
-                }
+                userView.Rows[index].Cells["PlayerName"].Value = player.Name;               
             }
             lbMsg.Text = "加载完毕";
         }
@@ -110,36 +101,8 @@ namespace lottery
             name = senderGrid.Rows[e.RowIndex].Cells["PlayerName"].Value.ToString();
             if (senderGrid.Columns[e.ColumnIndex].Name == "GoBet" && e.RowIndex >= 0) //开庄
             {
-                int gameOrder = 1; //保存局数
-                var game = db.Game.OrderByDescending(g => g.GameID).FirstOrDefault();
-                if (game != null)
-                {
-                    gameOrder = game.GameOrder + 1; //查出最近一局的局数
-                }
-                Game model = new Game()
-                {
-                    GameOrder = gameOrder,
-                    BetMoney = money, //开庄金额
-                    PlayerID = playerId,
-                    PlayTime = DateTime.Now,
-                    Year = DateTime.Now.Year,
-                    Month = DateTime.Now.Month,
-                    Day = DateTime.Now.Day,
-                    Fee = money*0.02
-                };
-                db.Game.Add(model);
-                db.SaveChanges();
-                var financeInfo = new FinanceInfo()
-                {
-                    PlayerID = playerId,
-                    GameID = model.GameID,
-                    LogTime = DateTime.Now,
-                    Money = -money //庄家该出的钱
-                };
-                db.FinanceInfo.Add(financeInfo);
-                db.SaveChanges();
-                money = money * 0.98; //抽成后开庄金额
-                Play play = new Play(name, money, model.GameID, playerId);
+                
+                Play play = new Play(name, money, playerId);
                 play.ShowDialog();
             }
         }

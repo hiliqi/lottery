@@ -14,6 +14,8 @@ namespace lottery
         public int DealerID { get; set; }
         public double DealerBalance { get; set; }
         public double DealerProfit { get; set; }
+        public double Multiple { get; set; }
+        public string OriginNumber { get; set; }
         public int GameID { get; set; }
         public virtual Game Game { get; set; }
     }

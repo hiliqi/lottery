@@ -31,7 +31,7 @@ namespace lottery
                 detailView.Rows[index].Cells["BetMoney"].Value = item.BetMoney;
                 detailView.Rows[index].Cells["Multiple"].Value = item.Multiple;
                 int roundId = item.RoundID;
-                var dealerDetail = db.PlayDetail.SingleOrDefault(p => p.RoundID == roundId);
+                var dealerDetail = db.Round.SingleOrDefault(p => p.RoundID == roundId);
                 detailView.Rows[index].Cells["DealerPoint"].Value = dealerDetail.Multiple;
                 detailView.Rows[index].Cells["Profit"].Value = item.Profit;
                 detailView.Rows[index].Cells["Balance"].Value = item.Balance;

@@ -33,24 +33,59 @@ namespace lottery
         private bool isNewRound;
         private List<string> tempPlayerName; //保存从数据库里查出来的闲家名字，用来检查新添加的闲家重名
 
-        public Play(string dealerName, double betMoney, int gameID, int dealerID)
+        public Play(string dealerName, double betMoney, int dealerID)
         {
             this.dealerName = dealerName;
             this.dealerID = dealerID;
             this.betMoney = betMoney;
-            this.gameID = gameID;
             tempPlayerName = new List<string>();
             isNewRound = false;
             db = DBSession.GetDbContext();
             InitializeComponent();
-            txtDealer.Text = dealerName;
-            var game = db.Game.SingleOrDefault(g => g.GameID == gameID);
-            gameOrder = game.GameOrder;
-            dealerBalance = betMoney; //一开始庄家的结余等于投注金额
-            txtBetMoney.Text = betMoney.ToString();
-            txtDealerBalance.Text = betMoney.ToString();
+            Init(dealerName, betMoney, gameID, dealerID);
             InitRound(); //开局的时候就初始化一轮
             LoadAllPlayer();
+        }
+
+        //开庄时初始化数据
+        private void Init(string dealerName, double betMoney, int gameID, int dealerID)
+        {
+            txtBetMoney.Text = betMoney.ToString(); //显示开庄金额
+            txtDealer.Text = dealerName; //显示庄家名称
+            int gameOrder = 1; //保存局数
+            var game = db.Game.OrderByDescending(g => g.GameID).FirstOrDefault();
+            if (game != null)
+            {
+                gameOrder = game.GameOrder + 1; //查出最近一局的局数
+            }
+            Game model = new Game()
+            {
+                GameOrder = gameOrder,
+                BetMoney = betMoney, //开庄金额，这里是没抽成前的金额
+                PlayerID = dealerID,
+                PlayTime = DateTime.Now,
+                Year = DateTime.Now.Year,
+                Month = DateTime.Now.Month,
+                Day = DateTime.Now.Day
+            };
+            db.Game.Add(model);
+            db.SaveChanges();
+            this.betMoney = betMoney * 0.98; //抽成后开庄金额
+            this.gameID = model.GameID;
+            this.gameOrder = game.GameOrder;
+            dealerBalance = this.betMoney; //一开始庄家的结余等于抽成后开庄金额
+            txtDealerBalance.Text = dealerBalance.ToString();
+            FinanceInfo finfo = new FinanceInfo()
+            {
+                Money = -betMoney*0.02, //抽成后写入财务表
+                LogTime = DateTime.Now,
+                PlayerID = dealerID,
+                GameID = model.GameID, //当前局
+                RoundID = -1//表示开庄抽成
+            };
+            db.FinanceInfo.Add(finfo);
+            db.SaveChanges();
+
         }
 
         //刷新表格
@@ -207,7 +242,7 @@ namespace lottery
                     playerId = player.PlayerID;
                 }
                 #endregion
-                var financeInfoList = db.FinanceInfo.Where(f => f.PlayerID == playerId);
+                var financeInfoList = db.FinanceInfo.Where(f => f.PlayerID == playerId && f.GameID==gameID); //查出本局玩家的钱
                 if (financeInfoList.Count()>0)
                 {
                     lastBalance = financeInfoList.Sum(f => f.Money);
@@ -250,7 +285,8 @@ namespace lottery
                 PlayerID = dealerID,
                 GameID = gameID,
                 LogTime = DateTime.Now,
-                Money = dealerProfit //庄家赢的钱
+                Money = dealerProfit, //庄家赢的钱
+                RoundID=currentRoundId
             };
             db.FinanceInfo.Add(dealerFinanceInfo);
             foreach (var item in LostPlayInfo)
@@ -262,7 +298,8 @@ namespace lottery
                     PlayerID = item.Detail.PlayerID,
                     GameID = gameID,
                     LogTime = DateTime.Now,
-                    Money = item.Detail.Profit //闲家输的钱
+                    Money = item.Detail.Profit, //闲家输的钱
+                    RoundID=currentRoundId
                 };
                 db.FinanceInfo.Add(playerFinanceInfo);
                 var player = db.Player.SingleOrDefault(p => p.PlayerID == item.Detail.PlayerID);
@@ -284,14 +321,16 @@ namespace lottery
                         PlayerID = item.Detail.PlayerID,
                         GameID = gameID,
                         LogTime = DateTime.Now,
-                        Money = item.Detail.Profit //闲家赢的钱
+                        Money = item.Detail.Profit, //闲家赢的钱
+                        RoundID=currentRoundId
                     };
                     var dealerFinanceInfo2 = new FinanceInfo()
                     {
                         PlayerID = dealerID,
                         GameID = gameID,
                         LogTime = DateTime.Now,
-                        Money = -item.Detail.Profit //闲家输的钱
+                        Money = -item.Detail.Profit, //闲家输的钱
+                        RoundID=currentRoundId
                     };
                     db.FinanceInfo.Add(playerFinanceInfo);
                     db.FinanceInfo.Add(dealerFinanceInfo2);
@@ -308,6 +347,7 @@ namespace lottery
                         PlayerID = item.Detail.PlayerID,
                         GameID = gameID,
                         LogTime = DateTime.Now,
+                        RoundID=currentRoundId,
                         Money = item.Detail.Profit - Math.Abs(remianing)//闲家赢的钱
                     };
                     var dealerFinanceInfo2 = new FinanceInfo()
@@ -315,6 +355,7 @@ namespace lottery
                         PlayerID = dealerID,
                         GameID = gameID,
                         LogTime = DateTime.Now,
+                        RoundID=currentRoundId,
                         Money = -(item.Detail.Profit - Math.Abs(remianing))//闲家输的钱
                     };
                     db.FinanceInfo.Add(playerFinanceInfo);
@@ -330,25 +371,38 @@ namespace lottery
             txtDealerProfit.Text = dealerProfit.ToString();
             txtDealerBalance.Text = dealerBalance.ToString();
             UpdateRoundStatus(dealerProfit);
-            UpdateGameStatus(); //更新本局状态
+            UpdateGameStatus(false); //更新本局状态
             ReLoadTable();
             isNewRound = false; //表示该轮已经结束  
         }
 
-        private async void UpdateGameStatus()
+        private async void UpdateGameStatus(bool isCloseGame)
         {
             var game = await db.Game.SingleOrDefaultAsync(g => g.GameID == gameID);
             if (game != null)
             {
-                game.Balance = dealerBalance;
-            }
-            game.EndTime = DateTime.Now;
-            if (game.Balance > 0)
-            {
-                game.Fee = game.Fee + game.Balance * 0.03;
-            }
-            db.Entry(game).State = EntityState.Modified;
-            await db.SaveChangesAsync();
+                if (isCloseGame) //如果是换庄
+                {
+                    game.Balance = dealerBalance * 0.97; //庄家结余要扣除掉下庄抽成
+                    game.EndTime = DateTime.Now;
+                    FinanceInfo finfo = new FinanceInfo()
+                    {
+                        Money = -dealerBalance * 0.03,
+                        LogTime = DateTime.Now,
+                        PlayerID = dealerID,
+                        GameID = gameID,
+                        RoundID = -3//表示下庄抽成
+                    };
+                    db.FinanceInfo.Add(finfo);
+                }
+                else
+                {
+                    game.Balance = dealerBalance;
+                }
+                db.Entry(game).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+            }       
+            
         }
 
         private async void UpdateRoundStatus(double dealerProfit)
@@ -356,6 +410,8 @@ namespace lottery
             var round = await db.Round.SingleOrDefaultAsync(r => r.RoundID == currentRoundId);
             round.DealerProfit = dealerProfit;
             round.DealerBalance = dealerBalance;
+            round.OriginNumber = txtDealerPoint.Text;
+            round.Multiple = dealerPoint;
             db.Entry(round).State = EntityState.Modified;
             await db.SaveChangesAsync();
         }
@@ -400,7 +456,7 @@ namespace lottery
         //返回开庄
         private void btnChangeDealer_Click(object sender, EventArgs e)
         {
-            UpdateGameStatus(); //换庄时更新本局状态
+            UpdateGameStatus(true); //换庄时更新本局状态
             new Result(gameID).ShowDialog();
             Close();
         }
@@ -413,29 +469,26 @@ namespace lottery
                 MessageBox.Show("请输入正确的追庄金额");
                 return;
             }
-            var financeInfo = new FinanceInfo()
-            {
-                PlayerID = dealerID,
-                GameID = gameID,
-                LogTime = DateTime.Now,
-                Money = -temp //庄家该出的钱
-            };
-            db.FinanceInfo.Add(financeInfo);
-            betMoney += temp * 0.98; //追加开庄金额
-            dealerBalance += temp * 0.98; //追加庄家结余            
+            txtBetMoney.Text = (betMoney+temp).ToString(); //加上没抽成前的金额
             var game = db.Game.SingleOrDefault(g => g.GameID == gameID);
-            game.BetMoney = betMoney;
+            game.BetMoney = betMoney+temp; //没抽成前的金额
+            betMoney += temp * 0.98; //追加开庄金额，要抽成
+            dealerBalance += temp * 0.98; //追加庄家结余  
             game.Balance = dealerBalance;
-            game.Fee = game.Fee + temp * 0.02;
             db.Entry(game).State = EntityState.Modified;
-            var playDetail = db.PlayDetail.Where(p => p.PlayerID == dealerID).OrderByDescending(p => p.PlayDetailID).FirstOrDefault();
-            if (playDetail != null)
-            {
-                playDetail.Balance = dealerBalance;
-                db.Entry(playDetail).State = EntityState.Modified;
-            }
             db.SaveChanges();
-            txtBetMoney.Text = betMoney.ToString();
+                                 
+            FinanceInfo finfo = new FinanceInfo()
+            {
+                Money = -temp * 0.02,
+                LogTime = DateTime.Now,
+                PlayerID = dealerID,
+                GameID = game.GameID,
+                RoundID = -2//表示追庄抽成
+            };
+            db.FinanceInfo.Add(finfo);
+            db.SaveChanges();
+            
             txtDealerBalance.Text = dealerBalance.ToString();
             txtAddDeal.Clear();
         }
@@ -507,12 +560,14 @@ namespace lottery
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            var list = db.PlayDetail.Where(r => r.RoundID == currentRoundId);
-            if (list.Count()<=0)
+            var detailList = db.PlayDetail.Where(r => r.RoundID == currentRoundId);
+            if (detailList.Count()<=0)
             {
                 MessageBox.Show("本轮已经不能修改");
             }
-            db.PlayDetail.RemoveRange(list);
+            db.PlayDetail.RemoveRange(detailList);
+            var financeInfoList = db.FinanceInfo.Where(r => r.RoundID == currentRoundId);
+            db.FinanceInfo.RemoveRange(financeInfoList);
             var lastRound = db.Round.SingleOrDefault(r => r.RoundID == lastRoundId);
             if (lastRound==null)
             {

@@ -117,34 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="GameID.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="GameOrder.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="Profit.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="Balance.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="Dealer.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="BetMoney.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="DealerBalance.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="PlayTime.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="EndTime.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="Export.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
+  <data name="Target" xml:space="preserve">
+    <value>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</value>
+  </data>
+  <data name="DefaultSchema" xml:space="preserve">
+    <value>dbo</value>
+  </data>
 </root>
