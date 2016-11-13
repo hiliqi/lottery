@@ -34,11 +34,16 @@ namespace lottery
             {
                 return -1;
             }
+            if (second==0&&third==0)
+            {
+                return 13;
+            }
             if (first==0&&second==0&&third==1)
             {
                 return 0;
             }
-            if ((first == 0 || first == 1) && second == 1 && third == 0)
+            if ((first == 0 || first == 1 || first==2 || first==3 || first==4 || first==5 || first==6 || first==7 || 
+                first==8 || first==9) && second == 1 && third == 0)
             {
                 return 11;
             }
@@ -52,7 +57,7 @@ namespace lottery
             }
             if (first > 0 && second - first == 1 && third - second == 1) //顺子
             {
-                return 13;
+                return 14;
             }
             int result = second + third;
             if (result % 10 == 0)//牛牛

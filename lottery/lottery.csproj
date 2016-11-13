@@ -103,33 +103,9 @@
       <DependentUpon>Detail.cs</DependentUpon>
     </Compile>
     <Compile Include="Common\Helper.cs" />
-    <Compile Include="Migrations\201611050335530_InitialCreate.cs" />
-    <Compile Include="Migrations\201611050335530_InitialCreate.Designer.cs">
-      <DependentUpon>201611050335530_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611080634309_AlterPlayer.cs" />
-    <Compile Include="Migrations\201611080634309_AlterPlayer.Designer.cs">
-      <DependentUpon>201611080634309_AlterPlayer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611080817244_AddFinance.cs" />
-    <Compile Include="Migrations\201611080817244_AddFinance.Designer.cs">
-      <DependentUpon>201611080817244_AddFinance.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611080917129_AlterFinance.cs" />
-    <Compile Include="Migrations\201611080917129_AlterFinance.Designer.cs">
-      <DependentUpon>201611080917129_AlterFinance.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611090148146_AlterFinance1.cs" />
-    <Compile Include="Migrations\201611090148146_AlterFinance1.Designer.cs">
-      <DependentUpon>201611090148146_AlterFinance1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611090325295_AlterFinance2.cs" />
-    <Compile Include="Migrations\201611090325295_AlterFinance2.Designer.cs">
-      <DependentUpon>201611090325295_AlterFinance2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611091147259_AlterRound.cs" />
-    <Compile Include="Migrations\201611091147259_AlterRound.Designer.cs">
-      <DependentUpon>201611091147259_AlterRound.cs</DependentUpon>
+    <Compile Include="Migrations\201611130750260_InitialCreate.cs" />
+    <Compile Include="Migrations\201611130750260_InitialCreate.Designer.cs">
+      <DependentUpon>201611130750260_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\FinanceInfo.cs" />
@@ -162,26 +138,8 @@
     <EmbeddedResource Include="Detail.resx">
       <DependentUpon>Detail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611050335530_InitialCreate.resx">
-      <DependentUpon>201611050335530_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611080634309_AlterPlayer.resx">
-      <DependentUpon>201611080634309_AlterPlayer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611080817244_AddFinance.resx">
-      <DependentUpon>201611080817244_AddFinance.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611080917129_AlterFinance.resx">
-      <DependentUpon>201611080917129_AlterFinance.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611090148146_AlterFinance1.resx">
-      <DependentUpon>201611090148146_AlterFinance1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611090325295_AlterFinance2.resx">
-      <DependentUpon>201611090325295_AlterFinance2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611091147259_AlterRound.resx">
-      <DependentUpon>201611091147259_AlterRound.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201611130750260_InitialCreate.resx">
+      <DependentUpon>201611130750260_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Play.resx">
       <DependentUpon>Play.cs</DependentUpon>
